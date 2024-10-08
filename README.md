@@ -30,5 +30,5 @@ This repository is organized as follows:
 - [Salesforce Developer Documentation](https://developer.salesforce.com/docs/atlas.en-us.0.html): Official Salesforce development resources.
 
 ## Contributors
-- **Mentor**: Olekasndr Kanivets
+- **Mentor**: Oleksandr Kanivets
 - **Mentee**: Maksym Kasyanchuk
