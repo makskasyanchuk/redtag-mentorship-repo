@@ -1,0 +1,34 @@
+@isTest
+public class TestDataFactory {
+    public static Account createAccount() {
+        Account acct = new Account(
+            Name = 'Redtag'
+        );
+        insert acct;
+        
+        return acct;
+    }
+
+    public static Contact createContact(Id acctId) {
+        Contact cont = new Contact(
+            LastName = 'Maksym Kasyanchuk',
+            AccountId = acctId
+        );
+        insert cont;
+
+        return cont;
+    }
+
+    public static Opportunity createOpportunity(Id acctId, Id contId) {
+        Opportunity opp = new Opportunity(
+            Name = 'Redtag' + ' from ' + Datetime.now().format('dd MMMM yyyy'),
+            Related_Account_Name__c = 'Redtag',
+            Related_Contact_Last_Name__c = 'Maksym Kasyanchuk',
+            AccountId = acctId,
+            Contact__c = contId
+        );
+        insert opp;
+
+        return opp;
+    }
+}
