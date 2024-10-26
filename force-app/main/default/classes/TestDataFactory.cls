@@ -31,4 +31,14 @@ public class TestDataFactory {
 
         return opp;
     }
+
+    public static Quote createQuote(Id opportunityId, Id contactId) {
+        Quote quote = new Quote(
+            Name = 'TestQuote',
+            OpportunityId = opportunityId,
+            ContactId = contactId
+        );
+        insert quote;
+        return quote;
+    }
 }

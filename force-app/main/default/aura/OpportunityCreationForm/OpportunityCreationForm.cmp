@@ -1,0 +1,29 @@
+<aura:component controller="OpportunityCreationFormController" implements="flexipage:availableForAllPageTypes,force:appHostable" access="global">
+    <!-- Attributes -->
+    <aura:attribute name="opportunity" type="Opportunity" default="{'sobjectType': 'Opportunity'}"/>
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="lineItems" type="List" default="[]"/>
+
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <!-- Navigation service -->
+    <lightning:navigation aura:id="navService"/>
+    <lightning:messageChannel type="OpportunityCreatedChannel__c" aura:id="messageService" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <div>
+        <lightning:card title="Create Opportunity">
+            <c:OpportunityProductsList aura:id="opportunityProductsList"/>
+            <lightning:recordEditForm aura:id="createOpportunity" objectApiName="Opportunity" class="slds-m-around_medium" onsuccess="{!c.handleSuccess}" onerror="{!c.handleError}">
+                <lightning:messages/>
+                <div class="slds-m-around_medium">
+                    <lightning:inputField aura:id="opportunityName" class="slds-p-around_medium" fieldName="Name"/>
+                    <p class="slds-text-title">Account</p>
+                    <force:inputField aura:id="accountField" value="{!v.opportunity.AccountId}" required="true"/>
+                    <p class="slds-text-title">Contact</p>
+                    <force:inputField aura:id="contactField" value="{!v.opportunity.Contact__c}" required="true"/>
+                </div>
+                <lightning:button class="slds-m-top_small slds-m-around_medium" variant="brand" type="submit" name="save" label="Save"/>
+            </lightning:recordEditForm>
+        </lightning:card>
+    </div>
+</aura:component>

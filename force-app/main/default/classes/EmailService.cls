@@ -41,4 +41,33 @@ public with sharing class EmailService {
         
         return emailsToPrepare;
     }
+
+    public static List<Messaging.SendEmailResult> sendEmailWithPdf(String recepientEmail, Blob pdfBlob, String quoteName) {
+        List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
+        Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+        email.setToAddresses(new List<String> {recepientEmail});
+        email.setSubject('PDF Attachment Email for ' + quoteName + ' Quote');
+        email.setPlainTextBody('Open the attached PDF');
+        
+        Messaging.EmailFileAttachment attachment = new Messaging.EmailFileAttachment();
+        attachment.setFileName(quoteName + '.pdf');
+        attachment.setBody(pdfBlob);
+        attachment.setContentType('application/pdf');
+
+        email.setFileAttachments(new Messaging.EmailFileAttachment[] { attachment });
+        emails.add(email);
+
+        Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+
+        return results;
+    }
+
+    public static Blob getPDFContent(Id recordId, String visualforcePageName) {
+        PageReference quotePage = new PageReference('/apex/' + visualforcePageName);
+        quotePage.getParameters().put('Id', recordId);
+        
+        Blob quotePdf = quotePage.getContentAsPDF();
+        
+        return quotePdf;
+    }
 }

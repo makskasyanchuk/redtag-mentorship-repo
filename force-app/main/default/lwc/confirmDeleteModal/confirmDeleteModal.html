@@ -1,0 +1,32 @@
+<template>
+    <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <div class="slds-modal__header">
+                <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate" tabindex="-1">Are you sure?</h1>
+                <p class="slds-m-top_x-small">View the policy below and confirm deletion <br/>
+                <a href="https://developer.salesforce.com/docs/atlas.en-us.c360a_api.meta/c360a_api/c360a_api_delete_records.htm">More information</a>.</p>
+            </div>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" style="overflow-y: hidden;">
+                <h1 style="font-size: 2rem; text-align: center;">Considerations for Deleting Data</h1>
+                <hr/>
+                <p>Keep the following in mind when you delete data in Data Cloud:</p>
+                <ul style="list-style-type: disc;" class="slds-box slds-p-around_medium">
+                    <li>You can delete a streaming data transform at any time.</li>
+                    <li>Deleting a streaming data transform doesn’t affect its source or target objects. Data that was written to the target DLO remains in the target DLO.</li>
+                    <li>If multiple streaming data transforms read from the same source and write to the same target, filtering conditions can be overridden. If a transform contains a WHERE clause and others don’t, the unfiltered source data enters the target. If the data source updates and there are changes to corresponding rows in the target that no longer meet the transform’s WHERE criteria, then the results from the earlier transforms are removed from the target.</li>
+                    <li>You can delete ingested data in a source DLO by submitting the records to delete through the data stream. For more information, see Delete Ingested Records in Data Cloud.</li>
+                    <li>If an existing record in a source DLO is updated so that it no longer matches the WHERE filter, that record is deleted from the target DLO.</li>
+                    <li>When multiple data transforms write to the same target DLO, a record isn’t deleted until all data in fields other than the primary key field is deleted. When only the primary key remains, the record is deleted.</li>
+                    <li>Duplicate primary keys in the source object cause unexpected behavior.</li>
+                </ul>
+                <br/>
+                <lightning-input lwc:ref="acceptConsiderations" type="checkbox" label="I have read the considerations and terms so ready to delete the record(s)" onchange={handleCheckboxChange}> </lightning-input>
+            </div>
+                <div class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral" aria-label="Cancel and close" onclick={handleModalClose}>Cancel</button>
+                <button lwc:ref="confirmationButton" class="slds-button slds-button_brand" onclick={confirmDelete} disabled={isDisabled}>Confirm</button>
+            </div>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+</template>

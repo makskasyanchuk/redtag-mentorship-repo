@@ -1,0 +1,53 @@
+<aura:component controller="OpportunityProductsListController" implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable" access="global">
+    <!-- Attributes -->
+    <aura:attribute name="options" type="List"/>
+    <aura:attribute name="selectedProduct" type="String" />
+    <aura:attribute name="opportunityLineItems" type="List" default="[]"/>
+    <aura:attribute name="unitPrice" type="Integer" default="0"/>
+    <aura:attribute name="quantity" type="Integer" default="0"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="opportunityLineItem" type="OpportunityLineItem"/>
+    <aura:attribute name="draftValues" type="Object" default="[]"/>
+    <aura:attribute name="errors" type="Object" default="[]"/>
+    <!-- Init -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+
+    <div class="slds-p-around_medium">
+        <lightning:card title="Add Opportunity Products" class="slds-m-around_medium">
+            <lightning:select name="productSelection" label="Select Products" class="slds-p-around_medium" value="{!v.selectedProduct}" onchange="{!c.handleProductChange}">
+                <option value="">---None---</option>
+                <aura:iteration items="{!v.options}" var="option">
+                    <option value="{!option.Id}">{!option.Name}</option>
+                </aura:iteration>
+            </lightning:select>
+
+            <lightning:input label="Quantity" aura:id="quantityInput" value="{!v.quantity}" type="number" class="slds-m-around_medium" onchange="{!c.handleQuantityChange}" />
+            <lightning:input label="Unit Price" aura:id="unitPriceInput" value="{!v.unitPrice}" type="number" class="slds-m-around_medium" onchange="{!c.handleUnitPriceChange}"/>
+
+            <lightning:button
+            variant="brand"
+            label="Add to list"
+            onclick="{!c.addToList}"
+            disabled="{!empty(v.selectedProduct)}"
+            class="slds-m-top_medium slds-m-around_medium"/>
+
+            <lightning:card title="Added Opportunity Products" class="slds-m-around_medium slds-m-top_small">
+                <div style="height: 300px;">
+                    <lightning:datatable
+                        keyField="Id"
+                        data="{!v.opportunityLineItems}"
+                        columns="{!v.columns}"
+                        editable="true"
+                        errors="{!v.errors}"
+                        draftValues="{!v.draftValues}"
+                        onsave="{!c.handleProductUpdate}"
+                        onrowaction="{!c.handleRowAction}"
+                        hideCheckboxColumn="true"
+                    />
+                </div>
+            </lightning:card>
+        </lightning:card>
+    </div>
+</aura:component>

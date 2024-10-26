@@ -5,6 +5,7 @@ private class EmailServiceTest {
         Account account = TestDataFactory.createAccount();
         Contact contact = TestDataFactory.createContact(account.Id);
         Opportunity opportunity = TestDataFactory.createOpportunity(account.Id, contact.Id);
+        Quote quote = TestDataFactory.createQuote(opportunity.Id, contact.Id);
     }
 
     @isTest
@@ -35,5 +36,21 @@ private class EmailServiceTest {
         Test.stopTest();
 
         Assert.areEqual(1, invocations, 'Email is sent');
+    }
+
+    @isTest
+    static void testSendEmailWithPdf() {
+        Quote quote = [SELECT Id, Name, AccountId, ContactId FROM Quote WHERE Name = 'TestQuote' LIMIT 1];
+
+        String recepientEmail = 'test@google.com';
+        Blob pdfBlob = Blob.valueOf('Test PDF');
+
+        Test.startTest();
+        List<Messaging.SingleEmailMessage> emailMessage = EmailService.sendEmailWithPdf(recepientEmail, pdfBlob, quote.Name);
+        Integer invocations = Limits.getEmailInvocations();
+        Test.stopTest();
+
+        Assert.areEqual(1, invocations, 'Email should be sent');
+        Assert.isFalse(pdfBlob == null);
     }
 }

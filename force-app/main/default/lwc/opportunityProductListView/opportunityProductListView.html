@@ -1,0 +1,15 @@
+<template>
+    <lightning-card title="Related Opportunity Products" icon-name="standard:product">
+        <div style="height: 300px; width: 100%;" class="slds-box">
+            <lightning-datatable
+                data={opportunityProducts}
+                columns={columns}
+                key-field="Id"
+                onrowaction={handleRowAction}
+                hide-checkbox-column="true"
+                resize-column-disabled="true"
+                class="slds-table_col-bordered"
+            ></lightning-datatable>
+        </div>
+    </lightning-card>
+</template>

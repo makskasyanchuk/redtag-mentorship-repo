@@ -1,0 +1,38 @@
+<template>
+    <lightning-card title="Opportuntities" class="slds-p-top_medium" icon-name="standard:opportunity">
+        <template if:true={isSelected}>
+            <lightning-button
+            variant="destructive" 
+            label="Delete Opportunity" 
+            title="Delete Opportunity" 
+            onclick={openDeleteModal} 
+            class="slds-m-around_medium"
+            icon-name="utility:delete"
+            slot="actions"
+            ></lightning-button>
+        </template>
+
+        <template if:true={showDeleteModal}>
+            <c-confirm-delete-modal
+                onclosemodal={handleModalClose}
+                onconfirmdelete={handleDelete}
+            ></c-confirm-delete-modal>
+        </template>
+
+        <div style="height: 300px;" class="slds-box">
+            <lightning-datatable
+                data={opportunities}
+                columns={columns}
+                key-field="Id"
+                onrowselection={handleRowSelection}
+                resize-column-disabled="true"
+                class="slds-table_col-bordered"
+            ></lightning-datatable>
+        </div>
+        <template if:true={isSelected}>
+            <!-- Pass the opportunityIds list to the child property -->
+            <c-opportunity-product-list-view opportunity-ids={opportunityIds}></c-opportunity-product-list-view>
+        </template>
+        
+    </lightning-card>
+</template>
