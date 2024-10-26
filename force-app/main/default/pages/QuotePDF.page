@@ -1,0 +1,96 @@
+<apex:page controller="PDFController" renderAs="pdf">
+    <apex:stylesheet value="{!URLFOR($Resource.PDFStyles)}" />
+    <apex:form>
+        <apex:pageBlock>
+            <apex:pageBlockSection title="Quote Details" columns="1">
+                <apex:outputField value="{!quote.Name}" />
+                <apex:outputField value="{!quote.AccountId}" />
+                <apex:outputField value="{!quote.ContactId}" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+
+        <br/>
+
+        <apex:pageBlock>
+            <h3>Related Quote Line Items</h3>
+            <apex:pageBlockTable value="{!quoteLineItems}" var="quoteLineItem">
+                <apex:column value="{!quoteLineItem.Product2.Name}"></apex:column>
+                <apex:column headerValue="Product Image">
+                    <apex:outputText value="{!quoteLineItem.Quote_Line_Item_Image__c}" escape="false" />
+                </apex:column>
+                <apex:column value="{!quoteLineItem.UnitPrice}"></apex:column>
+                <apex:column value="{!quoteLineItem.Quantity}"></apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+
+    <apex:form styleClass="page-break">
+        <h1>Customer Policy for Quote &amp; Sales Agreement</h1>
+
+        <h3>1. Pricing &amp; Validity</h3>
+        <ul class="bullet-text">
+            <li>All prices mentioned in this quote are exclusive of applicable taxes, including VAT or sales tax, unless stated
+                otherwise.</li>
+            <li>The prices quoted are valid for a period of 30 days from the date of this document. After this period, prices
+                are subject to change without prior notice.</li>
+        </ul>
+
+        <h3>2. Payment Terms</h3>
+        <ul class="bullet-text">
+            <li>Full payment is required within 30 days of the invoice date, unless otherwise agreed upon in writing.</li>
+            <li>Payment should be made via bank transfer, credit card, or any other agreed-upon method.</li>
+            <li>Late payments may incur interest charges at the rate of 1.5% per month, or the highest rate permissible by law,
+                whichever is lower.</li>
+        </ul>
+
+        <h3>3. Delivery Terms</h3>
+        <ul class="bullet-text">
+            <li>The estimated delivery date for products and services will be communicated upon acceptance of the order.</li>
+            <li>Delivery times are estimates only and subject to product availability, shipping delays, or unforeseen circumstances.</li>
+            <li>Any delays in delivery do not entitle the customer to compensation or cancellation of the order.</li>
+        </ul>
+
+        <h3>4. Warranty &amp; Returns</h3>
+        <ul class="bullet-text">
+            <li>All products are covered by a limited warranty as specified by the manufacturer, for a period of 12 months from
+                the date of purchase, unless otherwise stated.</li>
+            <li>Products may only be returned within 14 days from the date of delivery, provided that they are in their original
+                condition and packaging.</li>
+            <li>Customized or special-order items are non-refundable unless defective.</li>
+        </ul>
+
+        <h3>5. Cancellations &amp; Modifications</h3>
+        <ul class="bullet-text">
+            <li>Orders may be canceled or modified within 48 hours of placement without any penalty.</li>
+            <li>After this period, cancellations will incur a restocking fee of 10% of the total order value.</li>
+            <li>Requests for modifications to the order may result in adjustments to pricing and delivery timelines.</li>
+        </ul>
+
+        <h3>6. Liability Limitations</h3>
+        <ul class="bullet-text">
+            <li>Our liability for any claim arising from the purchase or use of our products is limited to the amount paid by
+                the customer for the specific products giving rise to the claim.</li>
+            <li>Under no circumstances will we be liable for indirect, incidental, or consequential damages arising from the
+                use or inability to use our products.</li>
+        </ul>
+
+        <h3>7. Customer Responsibility</h3>
+        <ul class="bullet-text">
+            <li>The customer is responsible for ensuring the accuracy of the information provided during the ordering process.
+                Any discrepancies or errors in the quote or order are to be brought to our attention within 48 hours.</li>
+            <li>By accepting this quote and placing an order, the customer acknowledges they have read and understood these terms
+                and conditions.</li>
+        </ul>
+        <br/>
+        <div style="justify-content:space-between">
+            <h3>
+                <span>Signature: _________________________
+                    <span style="float: right;">_________________________</span>
+                </span>
+            </h3>
+        </div>
+        <h3>Delivered to:
+            <apex:outputField value="{!quote.ContactId}" />
+        </h3>
+    </apex:form>
+</apex:page>
