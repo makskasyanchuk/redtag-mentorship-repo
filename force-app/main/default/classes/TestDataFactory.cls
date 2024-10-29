@@ -41,4 +41,13 @@ public class TestDataFactory {
         insert quote;
         return quote;
     }
+
+    public static Opportunity_Statistics__c createStats() {
+        Opportunity_Statistics__c stats = new Opportunity_Statistics__c(
+            Closed_Won_Opportunities__c = 1,
+            Closed_Lost_Opportunities__c = 1
+        );
+        insert stats;
+        return stats;
+    }
 }

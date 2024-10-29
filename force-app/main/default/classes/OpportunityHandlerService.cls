@@ -1,24 +1,17 @@
 public with sharing class OpportunityHandlerService {
-
-    public String accountName;
-    public String contactLastName;
-    
-    public OpportunityHandlerService() {
-        this('New Account', 'New Contact');
-    }
-
-    public OpportunityHandlerService(String accountName, String contactLastName) {
-        this.accountName = accountName;
-        this.contactLastName = contactLastName;
+    public static void prepareNames(List<Opportunity> opportunityList) {
+        // Here should be the logic to set names that are passed into controller class
+        for(Opportunity opportunity : opportunityList) {
+            opportunity.Related_Account_Name__c = 'Free Account opp';
+            opportunity.Related_Contact_Last_Name__c = 'Free Contact opp';
+        }
     }
 
     public static void createRelatedAccountAndContact(List<Opportunity> opportunityList) {
-        OpportunityHandlerService service = new OpportunityHandlerService();
-
-        List<Account> accountsList = prepareRelatedAccount(opportunityList, service.accountName);
+        List<Account> accountsList = prepareRelatedAccount(opportunityList);
         insert accountsList;
         
-        List<Contact> contactsList = prepareRelatedContact(opportunityList, service.accountName, service.contactLastName);
+        List<Contact> contactsList = prepareRelatedContact(opportunityList);
         insert contactsList;
 
         List<Opportunity> updatedOpportunityList = prepareOpportunity(opportunityList, 'Prospecting', Date.today().addDays(90));
@@ -51,11 +44,8 @@ public with sharing class OpportunityHandlerService {
 
     public static void deleteOpportunity(List<Opportunity> opportunityList) {
         EmailTemplate template = [SELECT Id, Subject, Body, HtmlValue FROM EmailTemplate WHERE Name = 'Opportunity Notification'];
-        String jobName = 'Opportunity Deletion Email Notification Job ' + String.valueOf(System.currentTimeMillis());
-        Datetime runTime = System.now().addHours(1);
-        String cronExp = '0 ' + runTime.minute() + ' ' + runTime.hour() + ' ' + runTime.day() + ' ' + runTime.month() + ' ? ' + runTime.year();
-        OpportunityEmailScheduler scheduler = new OpportunityEmailScheduler(opportunityList, template.Id);
-        System.schedule(jobName, cronExp, scheduler);
+        OpportunityEmailBatchSender emailBatch = new OpportunityEmailBatchSender(opportunityList, template.Id);
+        Database.executeBatch(emailBatch, 10);
     }
 
     @TestVisible
@@ -153,7 +143,7 @@ public with sharing class OpportunityHandlerService {
     }
 
     @TestVisible
-    private static List<Account> prepareRelatedAccount(List<Opportunity> opportunityList, String accountName) {
+    private static List<Account> prepareRelatedAccount(List<Opportunity> opportunityList) {
         List<Account> accountsList = new List<Account>();
         Map<String, Id> accountsMap = new Map<String, Id>();
         Set<String> accountNameSet = new Set<String>();
@@ -161,10 +151,11 @@ public with sharing class OpportunityHandlerService {
         for (Opportunity opp : opportunityList) {
             if (String.isNotBlank(opp.Related_Account_Name__c)) {
                 accountNameSet.add(opp.Related_Account_Name__c);
-            } else {
-                opp.Related_Account_Name__c = accountName; 
-                accountNameSet.add(opp.Related_Account_Name__c);
-            }
+            } 
+            // else {
+            //     opp.Related_Account_Name__c = OpportunityCreationFormController.getAccountName(); 
+            //     accountNameSet.add(opp.Related_Account_Name__c);
+            // }
         }
 
         for (Account existingAccount : [
@@ -190,7 +181,7 @@ public with sharing class OpportunityHandlerService {
     }
 
     @TestVisible
-    private static List<Contact> prepareRelatedContact(List<Opportunity> opportunityList, String accountName, String contactLastName) {
+    private static List<Contact> prepareRelatedContact(List<Opportunity> opportunityList) {
         Map<String, Account> accountsMap = new Map<String, Account>();
         Map<String, Contact> contactsMap = new Map<String, Contact>();
         List<Contact> contactList = new List<Contact>();
@@ -200,12 +191,13 @@ public with sharing class OpportunityHandlerService {
             if (String.isNotBlank(opp.Related_Account_Name__c) && String.isNotBlank(opp.Related_Contact_Last_Name__c)) {
                 relatedRecordNames.add(opp.Related_Contact_Last_Name__c);
                 relatedRecordNames.add(opp.Related_Account_Name__c);
-            } else {
-                opp.Related_Account_Name__c = accountName; 
-                opp.Related_Contact_Last_Name__c = contactLastName;
-                relatedRecordNames.add(opp.Related_Account_Name__c);
-                relatedRecordNames.add(opp.Related_Contact_Last_Name__c);
-            }
+            } 
+            // else {
+            //     opp.Related_Account_Name__c = OpportunityCreationFormController.getAccountName(); 
+            //     opp.Related_Contact_Last_Name__c = OpportunityCreationFormController.getContactName();
+            //     relatedRecordNames.add(opp.Related_Account_Name__c);
+            //     relatedRecordNames.add(opp.Related_Contact_Last_Name__c);
+            // }
             
         }
 

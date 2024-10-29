@@ -1,5 +1,6 @@
 <template>
     <lightning-card title="Opportuntities" class="slds-p-top_medium" icon-name="standard:opportunity">
+        <c-fire-scheduled-batch slot="actions"></c-fire-scheduled-batch>
         <template if:true={isSelected}>
             <lightning-button
             variant="destructive" 

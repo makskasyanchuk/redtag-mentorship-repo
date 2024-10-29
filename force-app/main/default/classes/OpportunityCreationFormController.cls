@@ -15,12 +15,7 @@ public without sharing class OpportunityCreationFormController {
 
     @AuraEnabled
     public static void updateAccountAndContactNames(Id opportunityId, String accountName, String contactLastName) {
-        Opportunity opp = [SELECT Id, Related_Account_Name__c, Related_Contact_Last_Name__c FROM Opportunity WHERE Id = :opportunityId LIMIT 1];
-        opp.Name = accountName + ' from ' + Datetime.now().format('dd MMMM yyyy');
-        opp.Related_Account_Name__c = accountName;
-        opp.Related_Contact_Last_Name__c = contactLastName;
-        // OpportunityHandlerService service = new OpportunityHandlerService(accountName, contactLastName);
-        update opp;
+        // Implementation to set the names
     }
 
     @AuraEnabled

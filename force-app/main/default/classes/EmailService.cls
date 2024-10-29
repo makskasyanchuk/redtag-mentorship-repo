@@ -70,4 +70,20 @@ public with sharing class EmailService {
         
         return quotePdf;
     }
+
+    @future
+    public static void sendEmailWithSummary(String body) {
+        Messaging.SingleEmailMessage email = prepareEmailWithSummary(body);
+        Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+    }
+
+    private static Messaging.SingleEmailMessage prepareEmailWithSummary(String body) {
+        Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+        email.setToAddresses(new List<String> {'kasyanchukmaks22@gmail.com'});
+        email.setSubject('Opportunities Summary');
+        email.setPlainTextBody(body);
+        email.setSaveAsActivity(false);
+
+        return email;
+    }
 }
