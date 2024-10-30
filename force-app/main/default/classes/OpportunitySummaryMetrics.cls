@@ -7,17 +7,21 @@ public with sharing class OpportunitySummaryMetrics implements Database.Batchabl
     }
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
-        return Database.getQueryLocator(
-            'SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c, AccountId, Contact__c, CloseDate, StageName' +
-            ' FROM Opportunity' +  
-            ' WHERE CloseDate = THIS_QUARTER'
-        );
+        return Database.getQueryLocator([
+            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c,
+            AccountId, Contact__c, CloseDate, StageName FROM Opportunity WHERE CloseDate = THIS_QUARTER
+        ]);
     }
 
     public void execute(Database.BatchableContext BC, List<Opportunity> scope) {
         List<Opportunity_Statistics__c> statisticsList = new List<Opportunity_Statistics__c>();
-        AggregateResult[] closedWonOppsCount = [SELECT COUNT(Id) FROM Opportunity WHERE StageName = 'Closed Won' AND CloseDate = THIS_QUARTER];
-        AggregateResult[] closedLostOppsCount = [SELECT COUNT(Id) FROM Opportunity WHERE StageName = 'Closed Lost' AND CloseDate = THIS_QUARTER];
+
+        AggregateResult[] closedWonOppsCount = [
+            SELECT COUNT(Id) FROM Opportunity WHERE StageName = 'Closed Won' AND CloseDate = THIS_QUARTER
+        ];
+        AggregateResult[] closedLostOppsCount = [
+            SELECT COUNT(Id) FROM Opportunity WHERE StageName = 'Closed Lost' AND CloseDate = THIS_QUARTER
+        ];
 
         Opportunity_Statistics__c statistics = new Opportunity_Statistics__c();
         statistics.Closed_Won_Opportunities__c = Integer.valueOf(closedWonOppsCount[0].get('expr0'));

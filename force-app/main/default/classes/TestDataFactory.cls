@@ -32,6 +32,56 @@ public class TestDataFactory {
         return opp;
     }
 
+    public static List<Opportunity> createWonOpportunities(Id accountId, Id contactId) {
+        Integer currentMonth = Date.today().month();
+        Integer currentQuarter = ((currentMonth - 1) / 3) + 1;
+
+        List<Opportunity> opportunitiesToInsert = new List<Opportunity>();
+        if(currentQuarter == 4) {
+            for (Integer i = 0; i < 5; i++) {
+                Opportunity wonOpportunity = new Opportunity();
+                wonOpportunity.Name = 'Closed Won Opp ' + i;
+                wonOpportunity.StageName = 'Closed Won';
+                wonOpportunity.CloseDate = Date.newInstance(Date.today().year(), 10, 15);
+                wonOpportunity.AccountId = accountId;
+                wonOpportunity.Contact__c = contactId;
+                wonOpportunity.Related_Account_Name__c = 'Test AccountQ41';
+                wonOpportunity.Related_Contact_Last_Name__c = 'Test ContactQ41';
+    
+                opportunitiesToInsert.add(wonOpportunity);
+            }
+        }
+
+        insert opportunitiesToInsert;
+
+        return opportunitiesToInsert;
+    }
+
+    public static List<Opportunity> createLostOpportunities(Id accountId, Id contactId) {
+        Integer currentMonth = Date.today().month();
+        Integer currentQuarter = ((currentMonth - 1) / 3) + 1;
+
+        List<Opportunity> opportunitiesToInsert = new List<Opportunity>();
+        if(currentQuarter == 4) {
+            for (Integer i = 0; i < 5; i++) {
+                Opportunity lostOpportunity = new Opportunity();
+                lostOpportunity.Name = 'Closed Lost Opp ' + i;
+                lostOpportunity.StageName = 'Closed Lost';
+                lostOpportunity.CloseDate = Date.newInstance(Date.today().year(), 10, 15);
+                lostOpportunity.AccountId = accountId;
+                lostOpportunity.Contact__c = contactId;
+                lostOpportunity.Related_Account_Name__c = 'Test AccountQ42';
+                lostOpportunity.Related_Contact_Last_Name__c = 'Test ContactQ42';
+    
+                opportunitiesToInsert.add(lostOpportunity);
+            }
+        }
+
+        insert opportunitiesToInsert;
+
+        return opportunitiesToInsert;
+    } 
+
     public static Quote createQuote(Id opportunityId, Id contactId) {
         Quote quote = new Quote(
             Name = 'TestQuote',
@@ -42,10 +92,10 @@ public class TestDataFactory {
         return quote;
     }
 
-    public static Opportunity_Statistics__c createStats() {
+    public static Opportunity_Statistics__c createStats(List<Opportunity> wonOpps, List<Opportunity> lostOpps) {
         Opportunity_Statistics__c stats = new Opportunity_Statistics__c(
-            Closed_Won_Opportunities__c = 1,
-            Closed_Lost_Opportunities__c = 1
+            Closed_Won_Opportunities__c = (Integer) wonOpps.size(),
+            Closed_Lost_Opportunities__c = (Integer) lostOpps.size()
         );
         insert stats;
         return stats;

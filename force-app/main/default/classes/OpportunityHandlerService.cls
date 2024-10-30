@@ -45,7 +45,7 @@ public with sharing class OpportunityHandlerService {
     public static void deleteOpportunity(List<Opportunity> opportunityList) {
         EmailTemplate template = [SELECT Id, Subject, Body, HtmlValue FROM EmailTemplate WHERE Name = 'Opportunity Notification'];
         OpportunityEmailBatchSender emailBatch = new OpportunityEmailBatchSender(opportunityList, template.Id);
-        Database.executeBatch(emailBatch, 10);
+        Id jobId = Database.executeBatch(emailBatch);
     }
 
     @TestVisible
