@@ -1,4 +1,8 @@
 public without sharing class OpportunityCreationFormController {
+
+    public static String instanceAccountName;
+    public static String instanceContactLastName;
+
     @AuraEnabled(cacheable=true)
     public static String getAccountNameById(Id accountId) {
         Account account = [SELECT Id, Name FROM Account WHERE Id = :accountId LIMIT 1];
@@ -14,8 +18,23 @@ public without sharing class OpportunityCreationFormController {
     }
 
     @AuraEnabled
-    public static void updateAccountAndContactNames(Id opportunityId, String accountName, String contactLastName) {
-        // Implementation to set the names
+    public static void updateAccountAndContactNames(String accountName, String contactLastName) {
+        System.debug('Account name: ' + accountName + ' ' + 'Contact Name: ' + contactLastName);
+        OpportunityWrapper wrapper = new OpportunityWrapper(accountName, contactLastName);
+        System.debug('Instance variables Wrapper: ' + wrapper.wrappperAccountName + ' / ' + wrapper.wrapperContactLastName);
+        instanceAccountName = wrapper.wrappperAccountName;
+        instanceContactLastName = wrapper.wrapperContactLastName;
+        System.debug('Instance variables Controller: ' + instanceAccountName + ' / ' + instanceContactLastName);
+    }
+
+    public static String returnAccountName() {
+        System.debug('Account name: ' + instanceAccountName);
+        return instanceAccountName;
+    }
+
+    public static String returnContactName() {
+        System.debug('Contact name: ' + instanceContactLastName);
+        return instanceContactLastName;
     }
 
     @AuraEnabled

@@ -1,6 +1,5 @@
 public with sharing class OpportunityTriggerHandler {
     public void onBeforeInsert(List<Opportunity> opportunityList) {
-        OpportunityHandlerService.prepareNames(opportunityList);
         OpportunityHandlerService.createRelatedAccountAndContact(opportunityList);
     }
 

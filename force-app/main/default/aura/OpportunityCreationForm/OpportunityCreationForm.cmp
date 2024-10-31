@@ -12,7 +12,6 @@
 
     <div>
         <lightning:card title="Create Opportunity">
-            <c:OpportunityProductsList aura:id="opportunityProductsList"/>
             <lightning:recordEditForm aura:id="createOpportunity" objectApiName="Opportunity" class="slds-m-around_medium" onsuccess="{!c.handleSuccess}" onerror="{!c.handleError}">
                 <lightning:messages/>
                 <div class="slds-m-around_medium">
@@ -24,6 +23,7 @@
                 </div>
                 <lightning:button class="slds-m-top_small slds-m-around_medium" variant="brand" type="submit" name="save" label="Save"/>
             </lightning:recordEditForm>
+            <c:OpportunityProductsList aura:id="opportunityProductsList"/>
         </lightning:card>
     </div>
 </aura:component>

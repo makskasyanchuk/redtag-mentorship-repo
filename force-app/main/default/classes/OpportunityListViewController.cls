@@ -23,7 +23,15 @@ public with sharing class OpportunityListViewController {
     public static List<OpportunityWrapper> getOpportunitiesWithProducts(){
         List<Opportunity> opportunityList =
         [
-            SELECT Id, Name, StageName, CloseDate, Account.Name, Contact__r.Name, AccountId, Contact__c FROM Opportunity
+            SELECT Id,
+                   Name, 
+                   StageName, 
+                   CloseDate, 
+                   Account.Name, 
+                   Contact__r.Name, 
+                   AccountId, 
+                   Contact__c 
+            FROM Opportunity
             WHERE Id IN (SELECT OpportunityId FROM OpportunityLineItem)
         ];
         List<OpportunityWrapper> opportunityWrapperList = new List<OpportunityWrapper>();

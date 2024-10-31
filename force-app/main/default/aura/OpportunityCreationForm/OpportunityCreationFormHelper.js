@@ -70,7 +70,9 @@
         });
 
         Promise.all([getAccountNameById, getContactLastNameById]).then(function(results) {
-            action.setParams({opportunityId : payload.id, accountName : results[0], contactLastName : results[1]});
+            console.log("Account name: " + results[0]);
+            console.log("Contact name: " + results[1]);
+            action.setParams({accountName : results[0], contactLastName : results[1]});
             action.setCallback(this, function(response) {
                 let state = response.getState();
                 if(state === "SUCCESS") {

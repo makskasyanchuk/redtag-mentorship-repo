@@ -12,8 +12,11 @@ private class OpportunityServiceTest {
     static void testPrepareRelatedAccount() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
         Opportunity opportunity = [
-            SELECT Id, Name, Related_Account_Name__c FROM Opportunity WHERE Related_Account_Name__c = :account.Name
-            AND AccountId =: account.Id
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c
+            FROM Opportunity 
+            WHERE Related_Account_Name__c = :account.Name AND AccountId =: account.Id
         ];
        
         Opportunity oppNew = new Opportunity(
@@ -26,9 +29,12 @@ private class OpportunityServiceTest {
         insert oppNew;
 
        List<Opportunity> opportunityList = [
-        SELECT Id, Name, Related_Account_Name__c FROM Opportunity
-        WHERE Related_Account_Name__c = :account.Name
-        AND Id IN :new List<Id>{opportunity.Id, oppNew.Id}
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c 
+            FROM Opportunity
+            WHERE Related_Account_Name__c = :account.Name
+            AND Id IN :new List<Id>{opportunity.Id, oppNew.Id}
        ];
 
        Test.startTest();
@@ -43,14 +49,23 @@ private class OpportunityServiceTest {
     @isTest 
     static void testPrepareRelatedContact() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
+
         Contact contact = [
-            SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id
-            AND LastName = 'Maksym Kasyanchuk'
+            SELECT Id,
+                   LastName, 
+                   AccountId 
+            FROM Contact 
+            WHERE AccountId =: account.Id AND LastName = 'Maksym Kasyanchuk'
         ];
+
         Opportunity opportunity = [
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c, Contact__c FROM Opportunity 
-            WHERE Related_Contact_Last_Name__c =: contact.LastName
-            AND Contact__c =: contact.Id
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c, 
+                   Contact__c 
+            FROM Opportunity 
+            WHERE Related_Contact_Last_Name__c =: contact.LastName AND Contact__c =: contact.Id
         ];
 
         Opportunity opportunityWithNewContact = new Opportunity(
@@ -64,7 +79,11 @@ private class OpportunityServiceTest {
         insert opportunityWithNewContact;
 
         List<Opportunity> opportunityList = [
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c FROM Opportunity
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c 
+            FROM Opportunity
             WHERE Related_Account_Name__c =: account.Name AND Related_Contact_Last_Name__c =: contact.LastName
         ];
 
@@ -90,11 +109,16 @@ private class OpportunityServiceTest {
     @isTest
     static void testUpdateRelatedAccountPositive() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
+
         Contact contact = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id];
+
         Opportunity opportunity = [
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c FROM Opportunity 
-            WHERE Related_Account_Name__c = :account.Name
-            AND AccountId =: account.Id
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c 
+            FROM Opportunity 
+            WHERE Related_Account_Name__c = :account.Name AND AccountId =: account.Id
         ];
 
         Map<Id, Opportunity> oldMap = new Map<Id, Opportunity>();
@@ -104,7 +128,11 @@ private class OpportunityServiceTest {
         opportunity.AccountId = null;
         
         List<Opportunity> opportunityList = [
-            SELECT Id, Name, AccountId, Related_Account_Name__c FROM Opportunity
+            SELECT Id, 
+                   Name, 
+                   AccountId, 
+                   Related_Account_Name__c 
+            FROM Opportunity
             WHERE Related_Account_Name__c = :account.Name
         ];
 
@@ -123,11 +151,16 @@ private class OpportunityServiceTest {
     @isTest
     static void testUpdateRelatedAccountNegative() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
+
         Contact contact = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id];
+
         Opportunity opportunity = [
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c FROM Opportunity 
-            WHERE Related_Account_Name__c = :account.Name
-            AND AccountId =: account.Id
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c 
+            FROM Opportunity 
+            WHERE Related_Account_Name__c = :account.Name AND AccountId =: account.Id
         ];
 
         Map<Id, Opportunity> oldMap = new Map<Id, Opportunity>();
@@ -136,7 +169,10 @@ private class OpportunityServiceTest {
         opportunity.Related_Account_Name__c = 'Amazon';
         
         List<Opportunity> opportunityList = [
-            SELECT Id, Name, Related_Account_Name__c FROM Opportunity
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c 
+            FROM Opportunity
             WHERE Related_Account_Name__c = :account.Name
         ];
 
@@ -155,11 +191,16 @@ private class OpportunityServiceTest {
     @isTest
     static void testUpdateRelatedContactPositive() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
+
         Contact contact = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id];
+
         Opportunity opportunity = [
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c FROM Opportunity 
-            WHERE Related_Account_Name__c = :account.Name
-            AND AccountId =: account.Id
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c 
+            FROM Opportunity 
+            WHERE Related_Account_Name__c = :account.Name AND AccountId =: account.Id
         ];
 
         Map<Id, Opportunity> oldMap = new Map<Id, Opportunity>();
@@ -172,7 +213,12 @@ private class OpportunityServiceTest {
         opportunity.Contact__c = null;
         
         List<Opportunity> opportunityList = [
-            SELECT Id, Name, Related_Contact_Last_Name__c, Contact__c, Related_Account_Name__c FROM Opportunity
+            SELECT Id, 
+                   Name, 
+                   Related_Contact_Last_Name__c, 
+                   Contact__c, 
+                   Related_Account_Name__c 
+            FROM Opportunity
             WHERE Related_Contact_Last_Name__c =: contact.LastName
         ];
 
@@ -191,11 +237,16 @@ private class OpportunityServiceTest {
     @isTest
     static void testUpdateRelatedContactNegative() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
+
         Contact contact = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id];
+
         Opportunity opportunity = [
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c FROM Opportunity 
-            WHERE Related_Account_Name__c = :account.Name
-            AND AccountId =: account.Id
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c 
+            FROM Opportunity 
+            WHERE Related_Account_Name__c = :account.Name AND AccountId =: account.Id
         ];
 
         Map<Id, Opportunity> oldMap = new Map<Id, Opportunity>();
@@ -207,7 +258,11 @@ private class OpportunityServiceTest {
         opportunity.Related_Contact_Last_Name__c = 'Nonexistant Record';
         
         List<Opportunity> opportunityList = [
-            SELECT Id, Name, Related_Contact_Last_Name__c, Related_Account_Name__c FROM Opportunity
+            SELECT Id, 
+                   Name, 
+                   Related_Contact_Last_Name__c, 
+                   Related_Account_Name__c 
+            FROM Opportunity
             WHERE Related_Contact_Last_Name__c =: contact.LastName
         ];
 
@@ -226,18 +281,31 @@ private class OpportunityServiceTest {
     @isTest
     static void testUpdateRelatedContactAndAccountInfo() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
+
         Contact contact = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id];
+
         Opportunity opportunity = [
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c, AccountId, Contact__c FROM Opportunity 
-            WHERE Related_Account_Name__c = :account.Name
-            AND AccountId =: account.Id
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c, 
+                   AccountId, 
+                   Contact__c 
+            FROM Opportunity 
+            WHERE Related_Account_Name__c = :account.Name AND AccountId =: account.Id
         ];
 
         Map<Id, Opportunity> oldMap = new Map<Id, Opportunity>();
         oldMap.put(opportunity.Id, opportunity);
         
         List<Opportunity> opportunityList = [
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c, AccountId, Contact__c FROM Opportunity
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c, 
+                   AccountId, 
+                   Contact__c 
+            FROM Opportunity
             WHERE Related_Account_Name__c = :account.Name AND Related_Contact_Last_Name__c =: contact.LastName
         ];
 
@@ -258,15 +326,24 @@ private class OpportunityServiceTest {
     @isTest
     static void testDeleteOpportunity() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
+
         Contact contact = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id];
+
         Opportunity opportunity = [
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c FROM Opportunity 
-            WHERE Related_Account_Name__c = :account.Name
-            AND AccountId =: account.Id
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c 
+            FROM Opportunity 
+            WHERE Related_Account_Name__c = :account.Name AND AccountId =: account.Id
         ];
 
         List<Opportunity> opportunityList = [
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c FROM Opportunity
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c 
+            FROM Opportunity
             WHERE Related_Account_Name__c = :account.Name AND Related_Contact_Last_Name__c =: contact.LastName
         ];
 

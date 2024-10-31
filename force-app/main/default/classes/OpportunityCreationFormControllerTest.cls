@@ -37,14 +37,20 @@ private class OpportunityCreationFormControllerTest {
     @isTest
     static void testUpdateAccountAndContactNames() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
+
         Contact contact = [SELECT Id, LastName FROM Contact WHERE AccountId = :account.Id];
+
         Opportunity opportunity = [
-            SELECT Id, Name, AccountId, Contact__c FROM Opportunity
+            SELECT Id, 
+                   Name, 
+                   AccountId, 
+                   Contact__c 
+            FROM Opportunity
             WHERE AccountId = :account.Id AND Contact__c = :contact.Id
         ];
 
         Test.startTest();
-        OpportunityCreationFormController.updateAccountAndContactNames(opportunity.Id, account.Name, contact.LastName);
+        OpportunityCreationFormController.updateAccountAndContactNames(account.Name, contact.LastName);
         Test.stopTest();
 
         Assert.isTrue(account.Id != null);
@@ -59,9 +65,15 @@ private class OpportunityCreationFormControllerTest {
     @isTest
     static void testCreateOpportunityLineItems() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
+
         Contact contact = [SELECT Id, LastName FROM Contact WHERE AccountId = :account.Id];
+
         Opportunity opportunity = [
-            SELECT Id, Name, AccountId, Contact__c FROM Opportunity
+            SELECT Id, 
+                   Name, 
+                   AccountId, 
+                   Contact__c 
+            FROM Opportunity
             WHERE AccountId = :account.Id AND Contact__c = :contact.Id
         ];
 

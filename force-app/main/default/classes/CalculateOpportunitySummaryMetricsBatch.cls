@@ -8,8 +8,16 @@ public with sharing class CalculateOpportunitySummaryMetricsBatch implements Dat
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
         return Database.getQueryLocator([
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c,
-            AccountId, Contact__c, CloseDate, StageName FROM Opportunity WHERE CloseDate = THIS_QUARTER
+            SELECT Id,
+                   Name,
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c,
+                   AccountId, 
+                   Contact__c, 
+                   CloseDate, 
+                   StageName 
+            FROM Opportunity
+            WHERE CloseDate = THIS_QUARTER
         ]);
     }
 
@@ -37,9 +45,7 @@ public with sharing class CalculateOpportunitySummaryMetricsBatch implements Dat
             Map<Id, Decimal> statisticsMapForClosedWonOpps = new Map<Id, Decimal>();
             Map<Id, Decimal> statisticsMapForClosedLostOpps = new Map<Id, Decimal>();
     
-            List<Opportunity_Statistics__c> statistics = [
-                SELECT Id, Closed_Won_Opportunities__c, Closed_Lost_Opportunities__c FROM Opportunity_Statistics__c
-            ];
+            List<Opportunity_Statistics__c> statistics = [SELECT Id, Closed_Won_Opportunities__c, Closed_Lost_Opportunities__c FROM Opportunity_Statistics__c];
     
             for (Opportunity_Statistics__c statistic : statistics) {
                 if(!statisticsMapForClosedWonOpps.containsKey(statistic.Id)) {

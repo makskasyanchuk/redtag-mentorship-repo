@@ -1,11 +1,7 @@
 public with sharing class OpportunityHandlerService {
-    public static void prepareNames(List<Opportunity> opportunityList) {
-        // Here should be the logic to set names that are passed into controller class
-        for(Opportunity opportunity : opportunityList) {
-            opportunity.Related_Account_Name__c = 'Free Account opp';
-            opportunity.Related_Contact_Last_Name__c = 'Free Contact opp';
-        }
-    }
+
+    public static String serviceAccountName =  OpportunityCreationFormController.instanceAccountName;
+    public static String serviceContactName = OpportunityCreationFormController.instanceContactLastName;
 
     public static void createRelatedAccountAndContact(List<Opportunity> opportunityList) {
         List<Account> accountsList = prepareRelatedAccount(opportunityList);
@@ -24,18 +20,18 @@ public with sharing class OpportunityHandlerService {
         List<Account> accountsToUpsert = updateAccountInfo(opportunityList, oldMap);
         upsert accountsToUpsert;
 
-        for(Account acct : accountsToUpsert) {
-            if(!accountIdByNameMap.containsKey(acct.Name)) {
-                accountIdByNameMap.put(acct.Name, acct.Id);
+        for(Account account : accountsToUpsert) {
+            if(!accountIdByNameMap.containsKey(account.Name)) {
+                accountIdByNameMap.put(account.Name, account.Id);
             }
         }
 
         List<Contact> contactsToUpsert = updateContactInfo(opportunityList, oldMap, accountIdByNameMap);
         upsert contactsToUpsert;
 
-        for(Contact con : contactsToUpsert) {
-            if(!contactIdByNameMap.containsKey(con.LastName)) {
-                contactIdByNameMap.put(con.LastName, con.Id);
+        for(Contact contact : contactsToUpsert) {
+            if(!contactIdByNameMap.containsKey(contact.LastName)) {
+                contactIdByNameMap.put(contact.LastName, contact.Id);
             }
         }
 
@@ -53,10 +49,10 @@ public with sharing class OpportunityHandlerService {
     @TestVisible
     private static List<Opportunity> updateOpportunityList(List<Opportunity> opportunityList, Map<String, Id> accountIdByNameMap, Map<String, Id> contactIdByNameMap) {
         List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
-        for (Opportunity opp : opportunityList) {
-            opp.AccountId = accountIdByNameMap.get(opp.Related_Account_Name__c);
-            opp.Contact__c = contactIdByNameMap.get(opp.Related_Contact_Last_Name__c);
-            opportunitiesToUpdate.add(opp);
+        for (Opportunity opportunity : opportunityList) {
+            opportunity.AccountId = accountIdByNameMap.get(opportunity.Related_Account_Name__c);
+            opportunity.Contact__c = contactIdByNameMap.get(opportunity.Related_Contact_Last_Name__c);
+            opportunitiesToUpdate.add(opportunity);
         }
         
         return opportunitiesToUpdate;
@@ -65,36 +61,37 @@ public with sharing class OpportunityHandlerService {
     @TestVisible
     private static List<Account> updateAccountInfo(List<Opportunity> opportunityList, Map<Id, Opportunity> oldMap) {
         List<Account> accountsToUpsert = new List<Account>();
+
         Map<Id, Account> accountsMap = new Map<Id, Account>();
         Set<String> relatedAccountNames = new Set<String>();
 
-        for(Opportunity opp : opportunityList) {
-            relatedAccountNames.add(opp.Related_Account_Name__c);
-            relatedAccountNames.add(oldMap.get(opp.Id).Related_Account_Name__c);
+        for(Opportunity opportunity : opportunityList) {
+            relatedAccountNames.add(opportunity.Related_Account_Name__c);
+            relatedAccountNames.add(oldMap.get(opportunity.Id).Related_Account_Name__c);
         }
 
-        for (Account acct : [
-            SELECT Id, Name FROM Account WHERE Name IN :relatedAccountNames
-        ]) {
-            if(!accountsMap.containsKey(acct.Id)) {
-                accountsMap.put(acct.Id, acct);
+        List<Account> existingAccountsWithRelatedAccountNames = [SELECT Id, Name FROM Account WHERE Name IN :relatedAccountNames];
+
+        for (Account account : existingAccountsWithRelatedAccountNames) {
+            if(!accountsMap.containsKey(account.Id)) {
+                accountsMap.put(account.Id, account);
             }
         }
 
-        for(Opportunity opp : opportunityList) {
+        for(Opportunity opportunity : opportunityList) {
             if(
-                oldMap.get(opp.Id).Related_Account_Name__c.contains(opp.Related_Account_Name__c) ||
-                opp.Related_Account_Name__c.contains(oldMap.get(opp.Id).Related_Account_Name__c)
+                oldMap.get(opportunity.Id).Related_Account_Name__c.contains(opportunity.Related_Account_Name__c) ||
+                opportunity.Related_Account_Name__c.contains(oldMap.get(opportunity.Id).Related_Account_Name__c)
             ) {
-                Account accountToUpdate = accountsMap.containsKey(oldMap.get(opp.Id).AccountId)
-                ? accountsMap.get(oldMap.get(opp.Id).AccountId)
-                : accountsMap.get(opp.AccountId);
+                Account accountToUpdate = accountsMap.containsKey(oldMap.get(opportunity.Id).AccountId)
+                ? accountsMap.get(oldMap.get(opportunity.Id).AccountId)
+                : accountsMap.get(opportunity.AccountId);
 
-                accountToUpdate.Name = opp.Related_Account_Name__c;
+                accountToUpdate.Name = opportunity.Related_Account_Name__c;
                 accountsToUpsert.add(accountToUpdate);
             } else {
                 Account accountToInsert = new Account();
-                accountToInsert.Name = opp.Related_Account_Name__c;
+                accountToInsert.Name = opportunity.Related_Account_Name__c;
                 accountsToUpsert.add(accountToInsert);
             }
         }
@@ -105,38 +102,39 @@ public with sharing class OpportunityHandlerService {
     @TestVisible
     private static List<Contact> updateContactInfo(List<Opportunity> opportunityList, Map<Id, Opportunity> oldMap, Map<String, Id> accountIdByNameMap) {
         List<Contact> contactsToUpsert = new List<Contact>();
+
         Map<Id, Contact> contactsMap = new Map<Id, Contact>();
         Set<String> relatedContactNames = new Set<String>();
 
-        for(Opportunity opp : opportunityList) {
-            relatedContactNames.add(opp.Related_Contact_Last_Name__c);
-            relatedContactNames.add(oldMap.get(opp.Id).Related_Contact_Last_Name__c);
+        for(Opportunity opportunity : opportunityList) {
+            relatedContactNames.add(opportunity.Related_Contact_Last_Name__c);
+            relatedContactNames.add(oldMap.get(opportunity.Id).Related_Contact_Last_Name__c);
         }
 
-        for (Contact con : [
-            SELECT Id, LastName FROM Contact WHERE LastName IN :relatedContactNames
-        ]) {
-            if(!contactsMap.containsKey(con.Id)) {
-                contactsMap.put(con.Id, con);
+        List<Contact> existingContactsWithRelatedContactNames = [SELECT Id, LastName FROM Contact WHERE LastName IN :relatedContactNames];
+
+        for (Contact contact : existingContactsWithRelatedContactNames) {
+            if(!contactsMap.containsKey(contact.Id)) {
+                contactsMap.put(contact.Id, contact);
             }
         }
 
-        for(Opportunity opp : opportunityList) {
+        for(Opportunity opportunity : opportunityList) {
             if(
-                oldMap.get(opp.Id).Related_Contact_Last_Name__c.contains(opp.Related_Contact_Last_Name__c) ||
-                opp.Related_Contact_Last_Name__c.contains(oldMap.get(opp.Id).Related_Contact_Last_Name__c)
+                oldMap.get(opportunity.Id).Related_Contact_Last_Name__c.contains(opportunity.Related_Contact_Last_Name__c) ||
+                opportunity.Related_Contact_Last_Name__c.contains(oldMap.get(opportunity.Id).Related_Contact_Last_Name__c)
             ) {
-                Contact contactToUpdate = contactsMap.containsKey(oldMap.get(opp.Id).Contact__c)
-                ? contactsMap.get(oldMap.get(opp.Id).Contact__c)
-                : contactsMap.get(opp.Contact__c);
+                Contact contactToUpdate = contactsMap.containsKey(oldMap.get(opportunity.Id).Contact__c)
+                ? contactsMap.get(oldMap.get(opportunity.Id).Contact__c)
+                : contactsMap.get(opportunity.Contact__c);
 
-                contactToUpdate.LastName = opp.Related_Contact_Last_Name__c;
-                contactToUpdate.AccountId = accountIdByNameMap.get(opp.Related_Account_Name__c);
+                contactToUpdate.LastName = opportunity.Related_Contact_Last_Name__c;
+                contactToUpdate.AccountId = accountIdByNameMap.get(opportunity.Related_Account_Name__c);
                 contactsToUpsert.add(contactToUpdate);
             } else {
                 Contact contactToInsert = new Contact();
-                contactToInsert.LastName = opp.Related_Contact_Last_Name__c;
-                contactToInsert.AccountId = accountIdByNameMap.get(opp.Related_Account_Name__c);
+                contactToInsert.LastName = opportunity.Related_Contact_Last_Name__c;
+                contactToInsert.AccountId = accountIdByNameMap.get(opportunity.Related_Account_Name__c);
                 contactsToUpsert.add(contactToInsert);
             }
         }
@@ -147,35 +145,36 @@ public with sharing class OpportunityHandlerService {
     @TestVisible
     private static List<Account> prepareRelatedAccount(List<Opportunity> opportunityList) {
         List<Account> accountsList = new List<Account>();
+
         Map<String, Id> accountsMap = new Map<String, Id>();
         Set<String> accountNameSet = new Set<String>();
 
-        for (Opportunity opp : opportunityList) {
-            if (String.isNotBlank(opp.Related_Account_Name__c)) {
-                accountNameSet.add(opp.Related_Account_Name__c);
+        for (Opportunity opportunity : opportunityList) {
+            if (String.isNotBlank(opportunity.Related_Account_Name__c)) {
+                accountNameSet.add(opportunity.Related_Account_Name__c);
             } 
-            // else {
-            //     opp.Related_Account_Name__c = OpportunityCreationFormController.getAccountName(); 
-            //     accountNameSet.add(opp.Related_Account_Name__c);
-            // }
+            else {
+                opportunity.Related_Account_Name__c = serviceAccountName; 
+                accountNameSet.add(opportunity.Related_Account_Name__c);
+            }
         }
 
-        for (Account existingAccount : [
-            SELECT Id, Name FROM Account WHERE Name IN :accountNameSet WITH SECURITY_ENFORCED
-        ]) {
+        List<Account> existingAccountsWithRelatedAccountNames = [SELECT Id, Name FROM Account WHERE Name IN :accountNameSet];
+
+        for (Account existingAccount : existingAccountsWithRelatedAccountNames) {
             if (!accountsMap.containsKey(existingAccount.Name)) {
                 accountsMap.put(existingAccount.Name, existingAccount.Id);
             }
         }
 
-        for (Opportunity opp : opportunityList) {
-            if (!accountsMap.containsKey(opp.Related_Account_Name__c)) {
+        for (Opportunity opportunity : opportunityList) {
+            if (!accountsMap.containsKey(opportunity.Related_Account_Name__c)) {
                 accountsList.add(new Account(
-                    Name = opp.Related_Account_Name__c
+                    Name = opportunity.Related_Account_Name__c
                 ));
-                opp.AccountId = accountsMap.get(opp.Related_Account_Name__c);
+                opportunity.AccountId = accountsMap.get(opportunity.Related_Account_Name__c);
             } else {
-                opp.AccountId = accountsMap.get(opp.Related_Account_Name__c);
+                opportunity.AccountId = accountsMap.get(opportunity.Related_Account_Name__c);
             }
         }
 
@@ -184,36 +183,35 @@ public with sharing class OpportunityHandlerService {
 
     @TestVisible
     private static List<Contact> prepareRelatedContact(List<Opportunity> opportunityList) {
+        List<Contact> contactList = new List<Contact>();
         Map<String, Account> accountsMap = new Map<String, Account>();
         Map<String, Contact> contactsMap = new Map<String, Contact>();
-        List<Contact> contactList = new List<Contact>();
         Set<String> relatedRecordNames = new Set<String>();
 
-        for (Opportunity opp : opportunityList) {
-            if (String.isNotBlank(opp.Related_Account_Name__c) && String.isNotBlank(opp.Related_Contact_Last_Name__c)) {
-                relatedRecordNames.add(opp.Related_Contact_Last_Name__c);
-                relatedRecordNames.add(opp.Related_Account_Name__c);
+        for (Opportunity opportunity : opportunityList) {
+            if (String.isNotBlank(opportunity.Related_Account_Name__c) && String.isNotBlank(opportunity.Related_Contact_Last_Name__c)) {
+                relatedRecordNames.add(opportunity.Related_Contact_Last_Name__c);
+                relatedRecordNames.add(opportunity.Related_Account_Name__c);
             } 
-            // else {
-            //     opp.Related_Account_Name__c = OpportunityCreationFormController.getAccountName(); 
-            //     opp.Related_Contact_Last_Name__c = OpportunityCreationFormController.getContactName();
-            //     relatedRecordNames.add(opp.Related_Account_Name__c);
-            //     relatedRecordNames.add(opp.Related_Contact_Last_Name__c);
-            // }
-            
+            else {
+                opportunity.Related_Account_Name__c = serviceAccountName; 
+                opportunity.Related_Contact_Last_Name__c = serviceContactName;
+                relatedRecordNames.add(opportunity.Related_Account_Name__c);
+                relatedRecordNames.add(opportunity.Related_Contact_Last_Name__c);
+            }
         }
 
-        for (Account existingAccount : [
-            SELECT Id, Name FROM Account WHERE Name IN :relatedRecordNames WITH SECURITY_ENFORCED
-        ]) {
+        List<Account> existingAccountsWithRelatedRecordNames = [SELECT Id, Name FROM Account WHERE Name IN :relatedRecordNames];
+
+        for (Account existingAccount : existingAccountsWithRelatedRecordNames) {
             if(!accountsMap.containsKey(existingAccount.Name)) {
                 accountsMap.put(existingAccount.Name, existingAccount);
             }
         }
 
-        for (Contact existingContact : [
-            SELECT Id, LastName, AccountId FROM Contact WHERE LastName IN :relatedRecordNames
-        ]) {
+        List<Contact> existingContactsWithRelatedRecordNames = [SELECT Id, LastName, AccountId FROM Contact WHERE LastName IN :relatedRecordNames];
+
+        for (Contact existingContact : existingContactsWithRelatedRecordNames) {
             if (!contactsMap.containsKey(existingContact.LastName)) {
                 contactsMap.put(existingContact.LastName, existingContact);
             }
@@ -235,39 +233,44 @@ public with sharing class OpportunityHandlerService {
 
     @TestVisible
     private static List<Opportunity> prepareOpportunity(List<Opportunity> opportunityList, String stageName, Date closeDate) {
-        Set<String> relatedRecordNames = new Set<String>();
-
         Map<String, Id> accountIdByNameMap = new Map<String, Id>();
         Map<String, Id> contactIdByNameMap = new Map<String, Id>();
-        
-        for (Opportunity opp : opportunityList) {
-            relatedRecordNames.add(opp.Related_Account_Name__c);
-            relatedRecordNames.add(opp.Related_Contact_Last_Name__c);
+        Set<String> relatedRecordNames = new Set<String>();
+
+        for (Opportunity opportunity : opportunityList) {
+            relatedRecordNames.add(opportunity.Related_Account_Name__c);
+            relatedRecordNames.add(opportunity.Related_Contact_Last_Name__c);
         }     
 
-        for (Account acct : [
-            SELECT Id, Name FROM Account WHERE Name IN :relatedRecordNames WITH SECURITY_ENFORCED
-        ]) {
-            if (!accountIdByNameMap.containsKey(acct.Name)) {
-                accountIdByNameMap.put(acct.Name, acct.Id);
+        List<Account> existingAccountsWithRelatedRecordNames = [SELECT Id, Name FROM Account WHERE Name IN :relatedRecordNames];
+
+        for (Account account : existingAccountsWithRelatedRecordNames) {
+            if (!accountIdByNameMap.containsKey(account.Name)) {
+                accountIdByNameMap.put(account.Name, account.Id);
             }
         }
 
-        for (Contact con : [
-            SELECT Id, LastName FROM Contact WHERE AccountId IN :accountIdByNameMap.values() AND LastName IN :relatedRecordNames
-        ]) {
-            if (!contactIdByNameMap.containsKey(con.LastName)) {
-                contactIdByNameMap.put(con.LastName, con.Id);
+        List<Contact> existingContactsWithRelatedRecordNames = [
+            SELECT 
+                Id,
+                LastName 
+            FROM Contact 
+            WHERE AccountId IN :accountIdByNameMap.values() AND LastName IN :relatedRecordNames
+        ];
+
+        for (Contact contact : existingContactsWithRelatedRecordNames) {
+            if (!contactIdByNameMap.containsKey(contact.LastName)) {
+                contactIdByNameMap.put(contact.LastName, contact.Id);
             }
         }
 
-        for (Opportunity opp : opportunityList) {
-            opp.Name = opp.Related_Account_Name__c + ' from ' + Datetime.now().format('dd MMMM yyyy');
-            opp.AccountId = accountIdByNameMap.get(opp.Related_Account_Name__c);
-            opp.Contact__c = contactIdByNameMap.get(opp.Related_Contact_Last_Name__c);
-            opp.PriceBook2Id = '01sQy000005wwwoIAA';
-            opp.StageName = stageName;
-            opp.CloseDate = closeDate;
+        for (Opportunity opportunity : opportunityList) {
+            opportunity.Name = opportunity.Related_Account_Name__c + ' from ' + Datetime.now().format('dd MMMM yyyy');
+            opportunity.AccountId = accountIdByNameMap.get(opportunity.Related_Account_Name__c);
+            opportunity.Contact__c = contactIdByNameMap.get(opportunity.Related_Contact_Last_Name__c);
+            opportunity.PriceBook2Id = '01sQy000005wwwoIAA';
+            opportunity.StageName = stageName;
+            opportunity.CloseDate = closeDate;
         }
 
         return opportunityList;
