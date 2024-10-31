@@ -44,8 +44,10 @@ public with sharing class OpportunityHandlerService {
 
     public static void deleteOpportunity(List<Opportunity> opportunityList) {
         EmailTemplate template = [SELECT Id, Subject, Body, HtmlValue FROM EmailTemplate WHERE Name = 'Opportunity Notification'];
-        OpportunityEmailBatchSender emailBatch = new OpportunityEmailBatchSender(opportunityList, template.Id);
-        Id jobId = Database.executeBatch(emailBatch);
+        OpportunityEmailSenderBatch emailBatch = new OpportunityEmailSenderBatch(opportunityList, template.Id);
+        emailBatch.start(null);
+        emailBatch.execute(null, opportunityList);
+        emailBatch.finish(null);
     }
 
     @TestVisible
@@ -243,18 +245,18 @@ public with sharing class OpportunityHandlerService {
             relatedRecordNames.add(opp.Related_Contact_Last_Name__c);
         }     
 
-        for(Account acct : [
+        for (Account acct : [
             SELECT Id, Name FROM Account WHERE Name IN :relatedRecordNames WITH SECURITY_ENFORCED
         ]) {
-            if(!accountIdByNameMap.containsKey(acct.Name)) {
+            if (!accountIdByNameMap.containsKey(acct.Name)) {
                 accountIdByNameMap.put(acct.Name, acct.Id);
             }
         }
 
-        for(Contact con : [
+        for (Contact con : [
             SELECT Id, LastName FROM Contact WHERE AccountId IN :accountIdByNameMap.values() AND LastName IN :relatedRecordNames
         ]) {
-            if(!contactIdByNameMap.containsKey(con.LastName)) {
+            if (!contactIdByNameMap.containsKey(con.LastName)) {
                 contactIdByNameMap.put(con.LastName, con.Id);
             }
         }

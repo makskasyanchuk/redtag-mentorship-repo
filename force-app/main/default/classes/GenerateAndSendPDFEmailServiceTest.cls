@@ -1,5 +1,5 @@
 @isTest
-private class PDFGeneratorTest {
+private class GenerateAndSendPDFEmailServiceTest {
 
     @TestSetup
     static void makeData(){

@@ -1,9 +1,9 @@
-public with sharing class OpportunitySummaryMetrics implements Database.Batchable<sObject>, Database.Stateful {
+public with sharing class CalculateOpportunitySummaryMetricsBatch implements Database.Batchable<sObject>, Database.Stateful {
     public Boolean skipFinish = false;
 
     @InvocableMethod
     public static void executeBatch() {
-        Id jobId = Database.executeBatch(new OpportunitySummaryMetrics());
+        Id jobId = Database.executeBatch(new CalculateOpportunitySummaryMetricsBatch());
     }
 
     public Database.QueryLocator start(Database.BatchableContext BC) {

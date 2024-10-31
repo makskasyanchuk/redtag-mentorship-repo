@@ -1,5 +1,5 @@
 @isTest
-private class OpportunityControllerTest {
+private class OpportunityCreationFormControllerTest {
 
     @TestSetup
     static void makeData(){

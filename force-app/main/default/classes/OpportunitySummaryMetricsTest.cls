@@ -18,9 +18,9 @@ private class OpportunitySummaryMetricsTest {
 
         Test.startTest();
         // Execute batch directly, to cover the invocable method
-        OpportunitySummaryMetrics.executeBatch();
+        CalculateOpportunitySummaryMetricsBatch.executeBatch();
         // Instantiate batch to call each method separately
-        OpportunitySummaryMetrics batchApex = new OpportunitySummaryMetrics();
+        CalculateOpportunitySummaryMetricsBatch batchApex = new CalculateOpportunitySummaryMetricsBatch();
         
         Database.QueryLocator ql = batchApex.start(null);
         batchApex.execute(null, opportunityList);
@@ -40,7 +40,7 @@ private class OpportunitySummaryMetricsTest {
 
     @isTest
     static void testFinish() {
-        OpportunitySummaryMetrics batchApex = new OpportunitySummaryMetrics();
+        CalculateOpportunitySummaryMetricsBatch batchApex = new CalculateOpportunitySummaryMetricsBatch();
         batchApex.skipFinish = false;
 
         Test.startTest();

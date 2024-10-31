@@ -1,9 +1,9 @@
-public with sharing class PDFController {
+public with sharing class QuotePdfController {
     public List<QuoteLineItem> quoteLineItems {get;set;}
     public Quote quote {get;set;}
     public static String quoteId = ApexPages.currentPage().getParameters().get('Id');
 
-    public PDFController() {
+    public QuotePdfController() {
         quote = getQuote(quoteId);
         quoteLineItems = getQuoteLineItems(quoteId);
     }

@@ -1,5 +1,5 @@
 @isTest
-private class PDFControllerTest {
+private class QuotePdfControllerTest {
 
     @TestSetup
     static void makeData(){
@@ -15,7 +15,7 @@ private class PDFControllerTest {
        Test.setCurrentPage(Page.QuotePDF);
        ApexPages.currentPage().getParameters().put('Id', quote.Id);
        Test.startTest();
-       PDFController controller = new PDFController();
+       QuotePdfController controller = new QuotePdfController();
        Test.stopTest();
     
        Assert.isTrue(quote.Id != null);
@@ -29,7 +29,7 @@ private class PDFControllerTest {
        Quote quote = [SELECT Id, Name, AccountId, ContactId FROM Quote WHERE Name = 'TestQuote' LIMIT 1];
        
        Test.startTest();
-       PDFController.getQuoteLineItems(quote.Id);
+       QuotePdfController.getQuoteLineItems(quote.Id);
        Test.stopTest();
 
        Assert.isTrue(quote.Id != null);
@@ -43,7 +43,7 @@ private class PDFControllerTest {
        Quote quote = [SELECT Id, Name, AccountId, ContactId FROM Quote WHERE Name = 'TestQuote' LIMIT 1];
        
        Test.startTest();
-       PDFController.getQuote(quote.Id);
+       QuotePdfController.getQuote(quote.Id);
        Test.stopTest();
     
        Assert.isTrue(quote.Id != null);

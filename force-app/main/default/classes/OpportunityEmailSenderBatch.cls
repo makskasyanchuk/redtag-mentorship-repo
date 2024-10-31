@@ -1,13 +1,13 @@
-public with sharing class OpportunityEmailBatchSender implements Database.Batchable<sObject>, Database.Stateful {
+public with sharing class OpportunityEmailSenderBatch implements Database.Batchable<sObject>, Database.Stateful {
     public List<Opportunity> opportunityList;
     public Id templateId;
     
-    public OpportunityEmailBatchSender(List<Opportunity> opportunityList, Id templateId) {
+    public OpportunityEmailSenderBatch(List<Opportunity> opportunityList, Id templateId) {
         this.opportunityList = opportunityList;
         this.templateId = templateId;
     }
 
-    public List<Opportunity> start(Database.BatchableContext BC) {
+    public Iterable<Opportunity> start(Database.BatchableContext BC) {
         return opportunityList;
     }
 

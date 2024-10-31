@@ -16,10 +16,16 @@ public with sharing class OpportunityProductListViewController {
 
     @AuraEnabled(cacheable=true)
     public static List<OpportunityProductWrapper> getOpportunityProducts(List<Id> opportunityIds){
-        List<OpportunityLineItem> opportunityProducts = 
-        [
-            SELECT Id, Product2.Name, Quantity, UnitPrice, Discount_Calculation__c, Opportunity.Name, OpportunityId FROM OpportunityLineItem
-            WHERE OpportunityId IN  :opportunityIds
+        List<OpportunityLineItem> opportunityProducts = [
+            SELECT Id,
+                   Product2.Name,
+                   Quantity,
+                   UnitPrice,
+                   Discount_Calculation__c,
+                   Opportunity.Name,
+                   OpportunityId
+            FROM OpportunityLineItem
+            WHERE OpportunityId IN :opportunityIds
         ];
         List<OpportunityProductWrapper> opportunityProductWrapperList = new List<OpportunityProductWrapper>();
 

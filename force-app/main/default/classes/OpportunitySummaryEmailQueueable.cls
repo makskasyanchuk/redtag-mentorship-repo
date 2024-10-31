@@ -1,9 +1,9 @@
-public with sharing class OpportunitySummaryEmail implements Queueable {
+public with sharing class OpportunitySummaryEmailQueueable implements Queueable {
     public class CustomEmailSendingException extends Exception{}
 
     private String body;
 
-    public OpportunitySummaryEmail(String body) {
+    public OpportunitySummaryEmailQueueable(String body) {
         this.body = body;
     }
 

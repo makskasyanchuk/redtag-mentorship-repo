@@ -46,7 +46,7 @@ private class EmailServiceTest {
         Blob pdfBlob = Blob.valueOf('Test PDF');
 
         Test.startTest();
-        List<Messaging.SingleEmailMessage> emailMessage = EmailService.sendEmailWithPdf(recepientEmail, pdfBlob, quote.Name);
+        List<Messaging.SendEmailResult> emailMessage = EmailService.sendEmailWithPdf(recepientEmail, pdfBlob, quote.Name);
         Integer invocations = Limits.getEmailInvocations();
         Test.stopTest();
 

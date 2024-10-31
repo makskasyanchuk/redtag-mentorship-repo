@@ -5,7 +5,7 @@ private with sharing class OpportunitySummaryEmailTest {
         String body = 'test body';
 
         Test.startTest();
-        OpportunitySummaryEmail queueableApex = new OpportunitySummaryEmail(body);
+        OpportunitySummaryEmailQueueable queueableApex = new OpportunitySummaryEmailQueueable(body);
         System.enqueueJob(queueableApex);
         Test.stopTest();
     }
