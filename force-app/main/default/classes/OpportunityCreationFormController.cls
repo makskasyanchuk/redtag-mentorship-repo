@@ -19,22 +19,9 @@ public without sharing class OpportunityCreationFormController {
 
     @AuraEnabled
     public static void updateAccountAndContactNames(String accountName, String contactLastName) {
-        System.debug('Account name: ' + accountName + ' ' + 'Contact Name: ' + contactLastName);
         OpportunityWrapper wrapper = new OpportunityWrapper(accountName, contactLastName);
-        System.debug('Instance variables Wrapper: ' + wrapper.wrappperAccountName + ' / ' + wrapper.wrapperContactLastName);
-        instanceAccountName = wrapper.wrappperAccountName;
+        instanceAccountName = wrapper.wrapperAccountName;
         instanceContactLastName = wrapper.wrapperContactLastName;
-        System.debug('Instance variables Controller: ' + instanceAccountName + ' / ' + instanceContactLastName);
-    }
-
-    public static String returnAccountName() {
-        System.debug('Account name: ' + instanceAccountName);
-        return instanceAccountName;
-    }
-
-    public static String returnContactName() {
-        System.debug('Contact name: ' + instanceContactLastName);
-        return instanceContactLastName;
     }
 
     @AuraEnabled

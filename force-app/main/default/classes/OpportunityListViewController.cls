@@ -21,8 +21,7 @@ public with sharing class OpportunityListViewController {
 
     @AuraEnabled(cacheable=true)
     public static List<OpportunityWrapper> getOpportunitiesWithProducts(){
-        List<Opportunity> opportunityList =
-        [
+        List<Opportunity> opportunityList = [
             SELECT Id,
                    Name, 
                    StageName, 

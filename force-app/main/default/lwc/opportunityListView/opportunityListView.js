@@ -27,11 +27,17 @@ export default class OpportunityListView extends LightningElement {
     @track opportunities = [];
     @track _wiredOpportunities = [];
     @track opportunityIds = [];
+    @track paginatedOpportunities = [];
     showDeleteModal = false;
     errors;
     isSelected = false;
 
     subscription = null;
+
+    // Page preferences
+    currentPage = 1;
+    pageSize = 10;
+    totalPages = 0;
 
     @wire(MessageContext)
     messageContext;
@@ -60,6 +66,8 @@ export default class OpportunityListView extends LightningElement {
 
         if(data) {
             this.opportunities = data;
+            this.totalPages = Math.ceil(this.opportunities.length / this.pageSize);
+            this.updatePaginatedOpportunities();
         }
         if(error) {
             this.errors = error;
@@ -67,6 +75,33 @@ export default class OpportunityListView extends LightningElement {
         }
     }
     
+    updatePaginatedOpportunities() {
+        const start = (this.currentPage - 1) * this.pageSize;
+        const end = this.currentPage * this.pageSize;
+        this.paginatedOpportunities = this.opportunities.slice(start, end);
+    }
+
+    handleNext() {
+        if (this.currentPage < this.totalPages) {
+            this.currentPage++;
+            this.updatePaginatedOpportunities();
+        }
+    }
+    handlePrevious() {
+        if (this.currentPage > 1) {
+            this.currentPage--;
+            this.updatePaginatedOpportunities();
+        }
+    }
+    handleFirst() {
+        this.currentPage = 1;
+        this.updatePaginatedOpportunities();
+    }
+    handleLast() {
+        this.currentPage = this.totalPages;
+        this.updatePaginatedOpportunities();
+    }
+
     handleRowSelection(event) {
         this.selectedRows = event.detail.selectedRows;
 
@@ -84,7 +119,7 @@ export default class OpportunityListView extends LightningElement {
             this.opportunityIds = [];
         }
     }   
-    
+
     handleDelete() {
         massDeleteOpportunities({opportunityIds: this.opportunityIds})
         .then(() => {
@@ -119,9 +154,18 @@ export default class OpportunityListView extends LightningElement {
         this.showDeleteModal = false;
     }
 
+    
     clearSelection() {
         this.template.querySelector('lightning-datatable').selectedRows = [];
         this.opportunityIds = [];
         this.isSelected = false;
+    }
+    
+    get first() {
+        return this.currentPage === 1;
+    }
+
+    get last() {
+        return this.currentPage === this.totalPages;
     }
 }

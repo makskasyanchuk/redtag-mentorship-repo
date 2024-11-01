@@ -10,6 +10,7 @@ public with sharing class OpportunityHandlerService {
         List<Contact> contactsList = prepareRelatedContact(opportunityList);
         insert contactsList;
 
+        
         List<Opportunity> updatedOpportunityList = prepareOpportunity(opportunityList, 'Prospecting', Date.today().addDays(90));
     }
 
@@ -265,7 +266,7 @@ public with sharing class OpportunityHandlerService {
         }
 
         for (Opportunity opportunity : opportunityList) {
-            opportunity.Name = opportunity.Related_Account_Name__c + ' from ' + Datetime.now().format('dd MMMM yyyy');
+            opportunity.Name = 'Opportunity' + ' from ' + Datetime.now().format('dd MMMM yyyy');
             opportunity.AccountId = accountIdByNameMap.get(opportunity.Related_Account_Name__c);
             opportunity.Contact__c = contactIdByNameMap.get(opportunity.Related_Contact_Last_Name__c);
             opportunity.PriceBook2Id = '01sQy000005wwwoIAA';
