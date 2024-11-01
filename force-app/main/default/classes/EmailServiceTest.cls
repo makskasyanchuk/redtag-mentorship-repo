@@ -11,13 +11,24 @@ private class EmailServiceTest {
     @isTest
     static void testEmailService() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
+
         Contact contact = [
-            SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id
-            AND LastName = 'Maksym Kasyanchuk'
+            SELECT Id,
+                   LastName, 
+                   AccountId 
+            FROM Contact 
+            WHERE AccountId =: account.Id AND LastName = 'Maksym Kasyanchuk'
         ];
+
         List<Opportunity> opportunityList = [
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c, AccountId, Contact__c
-            FROM Opportunity WHERE Related_Account_Name__c = :account.Name AND Related_Contact_Last_Name__c =: contact.LastName
+            SELECT Id, 
+                   Name, 
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c, 
+                   AccountId, 
+                   Contact__c
+            FROM Opportunity 
+            WHERE Related_Account_Name__c = :account.Name AND Related_Contact_Last_Name__c =: contact.LastName
         ];
 
         EmailTemplate et = new EmailTemplate();

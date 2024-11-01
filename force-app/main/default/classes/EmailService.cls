@@ -11,29 +11,29 @@ public with sharing class EmailService {
         Map<Id, List<Id>> accountOppMap = new Map<Id, List<Id>>();
         Map<String, Id> contactNameByIdMap = new Map<String, Id>();
 
-        List<Opportunity> oppsInAccts = [SELECT AccountId, Owner.Email, Related_Contact_Last_Name__c FROM Opportunity WHERE Id IN :opportunityList];
+        List<Opportunity> opportunities = [SELECT AccountId, Owner.Email, Related_Contact_Last_Name__c FROM Opportunity WHERE Id IN :opportunityList];
 
-        for (Opportunity opp : oppsInAccts) {
-            if (!accountOppMap.containsKey(opp.AccountId)) {
-                accountOppMap.put(opp.AccountId, new List<Id> {opp.Id});
+        for (Opportunity opportunity : opportunities) {
+            if (!accountOppMap.containsKey(opportunity.AccountId)) {
+                accountOppMap.put(opportunity.AccountId, new List<Id> {opportunity.Id});
             }
-            recepientEmails.add(opp.Owner.Email);
+            recepientEmails.add(opportunity.Owner.Email);
         }
 
-        for (Contact con : [
-            SELECT Id, LastName, AccountId FROM Contact WHERE AccountId IN :accountOppMap.keySet()
-        ]) {
-            if(!contactNameByIdMap.containsKey(con.LastName)) {
-                contactNameByIdMap.put(con.LastName, con.Id);
+        List<Contact> contactsWithRelatedAccounts = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId IN :accountOppMap.keySet()];
+
+        for (Contact contact : contactsWithRelatedAccounts) {
+            if(!contactNameByIdMap.containsKey(contact.LastName)) {
+                contactNameByIdMap.put(contact.LastName, contact.Id);
             }
         }
 
-        for(Opportunity opp : oppsInAccts) {
+        for(Opportunity opportunity : opportunities) {
             Messaging.SingleEmailMessage emailToPrepare = new Messaging.SingleEmailMessage();
             emailToPrepare.setToAddresses(recepientEmails);
             emailToPrepare.setTemplateId(templateId);
-            emailToPrepare.setTargetObjectId(contactNameByIdMap.get(opp.Related_Contact_Last_Name__c));
-            emailToPrepare.setWhatId(opp.Id);
+            emailToPrepare.setTargetObjectId(contactNameByIdMap.get(opportunity.Related_Contact_Last_Name__c));
+            emailToPrepare.setWhatId(opportunity.Id);
             emailToPrepare.setTreatTargetObjectAsRecipient(false);
             emailToPrepare.setSaveAsActivity(false);
             emailsToPrepare.add(emailToPrepare);
