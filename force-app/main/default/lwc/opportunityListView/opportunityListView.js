@@ -23,22 +23,31 @@ const columns = [
 ]
 
 export default class OpportunityListView extends LightningElement {
-    columns = columns;
-    @track opportunities = [];
-    @track _wiredOpportunities = [];
-    @track opportunityIds = [];
-    @track paginatedOpportunities = [];
-    showDeleteModal = false;
     errors;
+    columns = columns;
+    showDeleteModal = false;
     isSelected = false;
-
     subscription = null;
-
+    
     // Page preferences
     currentPage = 1;
     pageSize = 10;
     totalPages = 0;
+    
+    @track opportunities = [];
+    @track _wiredOpportunities = [];
+    @track opportunityIds = [];
+    @track paginatedOpportunities = [];
 
+    get first() {
+        return this.currentPage === 1;
+    }
+
+    get last() {
+        return this.currentPage === this.totalPages;
+    }
+
+    // Sub to channel block opened
     @wire(MessageContext)
     messageContext;
 
@@ -53,11 +62,7 @@ export default class OpportunityListView extends LightningElement {
             });
         }
     }
-
-    handleMessage(message) {
-        console.log('Recieved Message: ' + JSON.stringify(message));
-        return refreshApex(this._wiredOpportunities);
-    }
+    // Sub to channel block closed
     
     @wire(getOpportunitiesWithProducts)
     fetchData(value) {
@@ -87,16 +92,19 @@ export default class OpportunityListView extends LightningElement {
             this.updatePaginatedOpportunities();
         }
     }
+
     handlePrevious() {
         if (this.currentPage > 1) {
             this.currentPage--;
             this.updatePaginatedOpportunities();
         }
     }
+
     handleFirst() {
         this.currentPage = 1;
         this.updatePaginatedOpportunities();
     }
+
     handleLast() {
         this.currentPage = this.totalPages;
         this.updatePaginatedOpportunities();
@@ -118,7 +126,20 @@ export default class OpportunityListView extends LightningElement {
         if(this.isSelected === false) {
             this.opportunityIds = [];
         }
-    }   
+    }  
+
+    handleMessage(message) {
+        console.log('Recieved Message: ' + JSON.stringify(message));
+        return refreshApex(this._wiredOpportunities);
+    }
+
+    openDeleteModal() {
+        this.showDeleteModal = true;
+    }
+    
+    handleModalClose() {
+        this.showDeleteModal = false;
+    }
 
     handleDelete() {
         massDeleteOpportunities({opportunityIds: this.opportunityIds})
@@ -146,26 +167,9 @@ export default class OpportunityListView extends LightningElement {
         this.showDeleteModal = false;
     }
 
-    openDeleteModal() {
-        this.showDeleteModal = true;
-    }
-    
-    handleModalClose() {
-        this.showDeleteModal = false;
-    }
-
-    
     clearSelection() {
         this.template.querySelector('lightning-datatable').selectedRows = [];
         this.opportunityIds = [];
         this.isSelected = false;
-    }
-    
-    get first() {
-        return this.currentPage === 1;
-    }
-
-    get last() {
-        return this.currentPage === this.totalPages;
     }
 }

@@ -21,8 +21,8 @@ public with sharing class OpportunityHandlerService {
         List<Account> accountsToUpsert = updateAccountInfo(opportunityList, oldMap);
         upsert accountsToUpsert;
 
-        for(Account account : accountsToUpsert) {
-            if(!accountIdByNameMap.containsKey(account.Name)) {
+        for (Account account : accountsToUpsert) {
+            if (!accountIdByNameMap.containsKey(account.Name)) {
                 accountIdByNameMap.put(account.Name, account.Id);
             }
         }
@@ -30,8 +30,8 @@ public with sharing class OpportunityHandlerService {
         List<Contact> contactsToUpsert = updateContactInfo(opportunityList, oldMap, accountIdByNameMap);
         upsert contactsToUpsert;
 
-        for(Contact contact : contactsToUpsert) {
-            if(!contactIdByNameMap.containsKey(contact.LastName)) {
+        for (Contact contact : contactsToUpsert) {
+            if (!contactIdByNameMap.containsKey(contact.LastName)) {
                 contactIdByNameMap.put(contact.LastName, contact.Id);
             }
         }
@@ -66,7 +66,7 @@ public with sharing class OpportunityHandlerService {
         Map<Id, Account> accountsMap = new Map<Id, Account>();
         Set<String> relatedAccountNames = new Set<String>();
 
-        for(Opportunity opportunity : opportunityList) {
+        for (Opportunity opportunity : opportunityList) {
             relatedAccountNames.add(opportunity.Related_Account_Name__c);
             relatedAccountNames.add(oldMap.get(opportunity.Id).Related_Account_Name__c);
         }
@@ -74,13 +74,13 @@ public with sharing class OpportunityHandlerService {
         List<Account> existingAccountsWithRelatedAccountNames = [SELECT Id, Name FROM Account WHERE Name IN :relatedAccountNames];
 
         for (Account account : existingAccountsWithRelatedAccountNames) {
-            if(!accountsMap.containsKey(account.Id)) {
+            if (!accountsMap.containsKey(account.Id)) {
                 accountsMap.put(account.Id, account);
             }
         }
 
-        for(Opportunity opportunity : opportunityList) {
-            if(
+        for (Opportunity opportunity : opportunityList) {
+            if (
                 oldMap.get(opportunity.Id).Related_Account_Name__c.contains(opportunity.Related_Account_Name__c) ||
                 opportunity.Related_Account_Name__c.contains(oldMap.get(opportunity.Id).Related_Account_Name__c)
             ) {
@@ -107,7 +107,7 @@ public with sharing class OpportunityHandlerService {
         Map<Id, Contact> contactsMap = new Map<Id, Contact>();
         Set<String> relatedContactNames = new Set<String>();
 
-        for(Opportunity opportunity : opportunityList) {
+        for (Opportunity opportunity : opportunityList) {
             relatedContactNames.add(opportunity.Related_Contact_Last_Name__c);
             relatedContactNames.add(oldMap.get(opportunity.Id).Related_Contact_Last_Name__c);
         }
@@ -115,13 +115,13 @@ public with sharing class OpportunityHandlerService {
         List<Contact> existingContactsWithRelatedContactNames = [SELECT Id, LastName FROM Contact WHERE LastName IN :relatedContactNames];
 
         for (Contact contact : existingContactsWithRelatedContactNames) {
-            if(!contactsMap.containsKey(contact.Id)) {
+            if (!contactsMap.containsKey(contact.Id)) {
                 contactsMap.put(contact.Id, contact);
             }
         }
 
-        for(Opportunity opportunity : opportunityList) {
-            if(
+        for (Opportunity opportunity : opportunityList) {
+            if (
                 oldMap.get(opportunity.Id).Related_Contact_Last_Name__c.contains(opportunity.Related_Contact_Last_Name__c) ||
                 opportunity.Related_Contact_Last_Name__c.contains(oldMap.get(opportunity.Id).Related_Contact_Last_Name__c)
             ) {
@@ -153,8 +153,7 @@ public with sharing class OpportunityHandlerService {
         for (Opportunity opportunity : opportunityList) {
             if (String.isNotBlank(opportunity.Related_Account_Name__c)) {
                 accountNameSet.add(opportunity.Related_Account_Name__c);
-            } 
-            else {
+            } else {
                 opportunity.Related_Account_Name__c = serviceAccountName; 
                 accountNameSet.add(opportunity.Related_Account_Name__c);
             }
@@ -193,8 +192,7 @@ public with sharing class OpportunityHandlerService {
             if (String.isNotBlank(opportunity.Related_Account_Name__c) && String.isNotBlank(opportunity.Related_Contact_Last_Name__c)) {
                 relatedRecordNames.add(opportunity.Related_Contact_Last_Name__c);
                 relatedRecordNames.add(opportunity.Related_Account_Name__c);
-            } 
-            else {
+            } else {
                 opportunity.Related_Account_Name__c = serviceAccountName; 
                 opportunity.Related_Contact_Last_Name__c = serviceContactName;
                 relatedRecordNames.add(opportunity.Related_Account_Name__c);
@@ -205,7 +203,7 @@ public with sharing class OpportunityHandlerService {
         List<Account> existingAccountsWithRelatedRecordNames = [SELECT Id, Name FROM Account WHERE Name IN :relatedRecordNames];
 
         for (Account existingAccount : existingAccountsWithRelatedRecordNames) {
-            if(!accountsMap.containsKey(existingAccount.Name)) {
+            if (!accountsMap.containsKey(existingAccount.Name)) {
                 accountsMap.put(existingAccount.Name, existingAccount);
             }
         }
@@ -266,7 +264,7 @@ public with sharing class OpportunityHandlerService {
         }
 
         for (Opportunity opportunity : opportunityList) {
-            opportunity.Name = 'Opportunity' + ' from ' + Datetime.now().format('dd MMMM yyyy');
+            opportunity.Name = opportunity.Related_Account_Name__c + ' from ' + Datetime.now().format('dd MMMM yyyy');
             opportunity.AccountId = accountIdByNameMap.get(opportunity.Related_Account_Name__c);
             opportunity.Contact__c = contactIdByNameMap.get(opportunity.Related_Contact_Last_Name__c);
             opportunity.PriceBook2Id = '01sQy000005wwwoIAA';

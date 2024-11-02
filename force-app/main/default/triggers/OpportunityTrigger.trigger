@@ -1,6 +1,5 @@
 trigger OpportunityTrigger on Opportunity (before insert, before update, before delete) {
     OpportunityTriggerHandler handler = new OpportunityTriggerHandler();
-
     if(Trigger.isBefore && Trigger.isInsert) {
         handler.onBeforeInsert(Trigger.new);
     }

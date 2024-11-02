@@ -29,7 +29,7 @@ public with sharing class OpportunityProductListViewController {
         ];
         List<OpportunityProductWrapper> opportunityProductWrapperList = new List<OpportunityProductWrapper>();
 
-        for(OpportunityLineItem opportunityProduct : opportunityProducts) {
+        for (OpportunityLineItem opportunityProduct : opportunityProducts) {
             OpportunityProductWrapper opportunityProductWrapper = new OpportunityProductWrapper();
             opportunityProductWrapper.opportunityName = opportunityProduct.Opportunity.Name;
             opportunityProductWrapper.productName = opportunityProduct.Product2.Name;

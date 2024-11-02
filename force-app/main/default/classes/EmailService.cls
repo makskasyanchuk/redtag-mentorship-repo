@@ -23,12 +23,12 @@ public with sharing class EmailService {
         List<Contact> contactsWithRelatedAccounts = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId IN :accountOppMap.keySet()];
 
         for (Contact contact : contactsWithRelatedAccounts) {
-            if(!contactNameByIdMap.containsKey(contact.LastName)) {
+            if (!contactNameByIdMap.containsKey(contact.LastName)) {
                 contactNameByIdMap.put(contact.LastName, contact.Id);
             }
         }
 
-        for(Opportunity opportunity : opportunities) {
+        for (Opportunity opportunity : opportunities) {
             Messaging.SingleEmailMessage emailToPrepare = new Messaging.SingleEmailMessage();
             emailToPrepare.setToAddresses(recepientEmails);
             emailToPrepare.setTemplateId(templateId);

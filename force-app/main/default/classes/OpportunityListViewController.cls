@@ -35,7 +35,7 @@ public with sharing class OpportunityListViewController {
         ];
         List<OpportunityWrapper> opportunityWrapperList = new List<OpportunityWrapper>();
 
-        for(Opportunity opportunity : opportunityList) {
+        for (Opportunity opportunity : opportunityList) {
             OpportunityWrapper opportunityWrapper = new OpportunityWrapper();
             opportunityWrapper.opportunityId = opportunity.Id;
             opportunityWrapper.opportunityName = opportunity.Name;

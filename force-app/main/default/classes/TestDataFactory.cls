@@ -37,7 +37,7 @@ public class TestDataFactory {
         Integer currentQuarter = ((currentMonth - 1) / 3) + 1;
 
         List<Opportunity> opportunitiesToInsert = new List<Opportunity>();
-        if(currentQuarter == 4) {
+        if (currentQuarter == 4) {
             for (Integer i = 0; i < 5; i++) {
                 Opportunity wonOpportunity = new Opportunity();
                 wonOpportunity.Name = 'Closed Won Opp ' + i;
@@ -62,7 +62,7 @@ public class TestDataFactory {
         Integer currentQuarter = ((currentMonth - 1) / 3) + 1;
 
         List<Opportunity> opportunitiesToInsert = new List<Opportunity>();
-        if(currentQuarter == 4) {
+        if (currentQuarter == 4) {
             for (Integer i = 0; i < 5; i++) {
                 Opportunity lostOpportunity = new Opportunity();
                 lostOpportunity.Name = 'Closed Lost Opp ' + i;
@@ -89,6 +89,7 @@ public class TestDataFactory {
             ContactId = contactId
         );
         insert quote;
+
         return quote;
     }
 
@@ -98,6 +99,7 @@ public class TestDataFactory {
             Closed_Lost_Opportunities__c = (Integer) lostOpps.size()
         );
         insert stats;
+        
         return stats;
     }
 }

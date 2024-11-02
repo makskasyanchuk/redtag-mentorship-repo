@@ -8,9 +8,7 @@
                 <apex:outputField value="{!quote.ContactId}" />
             </apex:pageBlockSection>
         </apex:pageBlock>
-
         <br/>
-
         <apex:pageBlock>
             <h3>Related Quote Line Items</h3>
             <apex:pageBlockTable value="{!quoteLineItems}" var="quoteLineItem">
@@ -23,7 +21,6 @@
             </apex:pageBlockTable>
         </apex:pageBlock>
     </apex:form>
-
     <apex:form styleClass="page-break">
         <h1>Customer Policy for Quote &amp; Sales Agreement</h1>
 

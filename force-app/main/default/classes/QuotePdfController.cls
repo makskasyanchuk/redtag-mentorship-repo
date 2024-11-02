@@ -10,7 +10,7 @@ public with sharing class QuotePdfController {
 
     @TestVisible
     private static List<QuoteLineItem> getQuoteLineItems(Id quoteId) {
-        return  [
+        return [
             SELECT Id,
                    Product2.Name, 
                    Quote_Line_Item_Image__c, 

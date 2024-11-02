@@ -40,7 +40,7 @@ public with sharing class CalculateOpportunitySummaryMetricsBatch implements Dat
     }
 
     public void finish(Database.BatchableContext BC) { 
-        if(!skipFinish) {
+        if (!skipFinish) {
             String body;
             Map<Id, Decimal> statisticsMapForClosedWonOpps = new Map<Id, Decimal>();
             Map<Id, Decimal> statisticsMapForClosedLostOpps = new Map<Id, Decimal>();
@@ -48,10 +48,10 @@ public with sharing class CalculateOpportunitySummaryMetricsBatch implements Dat
             List<Opportunity_Statistics__c> statistics = [SELECT Id, Closed_Won_Opportunities__c, Closed_Lost_Opportunities__c FROM Opportunity_Statistics__c];
     
             for (Opportunity_Statistics__c statistic : statistics) {
-                if(!statisticsMapForClosedWonOpps.containsKey(statistic.Id)) {
+                if (!statisticsMapForClosedWonOpps.containsKey(statistic.Id)) {
                     statisticsMapForClosedWonOpps.put(statistic.Id, statistic.Closed_Won_Opportunities__c);
                 }
-                if(!statisticsMapForClosedLostOpps.containsKey(statistic.Id)) {
+                if (!statisticsMapForClosedLostOpps.containsKey(statistic.Id)) {
                     statisticsMapForClosedLostOpps.put(statistic.Id, statistic.Closed_Lost_Opportunities__c);
                 }
     

@@ -12,8 +12,16 @@ private class OpportunitySummaryMetricsTest {
     @isTest
     static void testExecute() {
         List<Opportunity> opportunityList = [
-            SELECT Id, Name, Related_Account_Name__c, Related_Contact_Last_Name__c,
-            AccountId, Contact__c, CloseDate, StageName FROM Opportunity WHERE CloseDate = THIS_QUARTER
+            SELECT Id,
+                   Name, 
+                   Related_Account_Name__c, 
+                   Related_Contact_Last_Name__c,
+                   AccountId, 
+                   Contact__c, 
+                   CloseDate, 
+                   StageName 
+            FROM Opportunity 
+            WHERE CloseDate = THIS_QUARTER
         ];
 
         Test.startTest();
@@ -28,9 +36,7 @@ private class OpportunitySummaryMetricsTest {
 
         Test.stopTest();
 
-        List<Opportunity_Statistics__c> statistics = [
-            SELECT Id, Closed_Won_Opportunities__c, Closed_Lost_Opportunities__c FROM Opportunity_Statistics__c
-        ];
+        List<Opportunity_Statistics__c> statistics = [SELECT Id, Closed_Won_Opportunities__c, Closed_Lost_Opportunities__c FROM Opportunity_Statistics__c];
 
         Assert.isNotNull(statistics, 'Statistics record should have been created.');
         Assert.areEqual(1, statistics.size(), 'There should be one statistics record.');

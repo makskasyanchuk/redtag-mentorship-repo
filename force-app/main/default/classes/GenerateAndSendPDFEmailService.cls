@@ -1,4 +1,23 @@
 public with sharing class GenerateAndSendPDFEmailService {
+    @InvocableMethod
+    public static List<Result> sendEmailWithPdfAttachment(List<Request> requests) {
+        Result result = new Result();
+        for (Request req : requests) {
+            Blob pdfBlob = EmailService.getPDFContent(req.recordId, req.visualforcePageName);
+            List<Messaging.SendEmailResult> emailMessage = EmailService.sendEmailWithPdf(req.recepientEmail, pdfBlob, req.quoteName);
+
+            if (!emailMessage.isEmpty() && emailMessage[0].isSuccess()) {
+                result.isSuccess = true;
+            } else {
+                result.isSuccess = false;
+                result.errorMessage = emailMessage[0].getErrors()[0].getMessage();
+            }
+        }
+        List<Result> resultsWrapper = new List<Result>{result};
+        
+        return resultsWrapper;
+    }
+
     public class Request {
         @InvocableVariable(label='Record Id' required=true)
         public String recordId;
@@ -15,24 +34,5 @@ public with sharing class GenerateAndSendPDFEmailService {
         public Boolean isSuccess;
         @InvocableVariable(Label='Error message')
         public String errorMessage;
-    }
-
-    @InvocableMethod
-    public static List<Result> sendEmailWithPdfAttachment(List<Request> requests) {
-        Result result = new Result();
-        for(Request req : requests) {
-            Blob pdfBlob = EmailService.getPDFContent(req.recordId, req.visualforcePageName);
-            List<Messaging.SendEmailResult> emailMessage = EmailService.sendEmailWithPdf(req.recepientEmail, pdfBlob, req.quoteName);
-
-            if(!emailMessage.isEmpty() && emailMessage[0].isSuccess()) {
-                result.isSuccess = true;
-            } else {
-                result.isSuccess = false;
-                result.errorMessage = emailMessage[0].getErrors()[0].getMessage();
-            }
-        }
-        List<Result> resultsWrapper = new List<Result>{result};
-        
-        return resultsWrapper;
     }
 }

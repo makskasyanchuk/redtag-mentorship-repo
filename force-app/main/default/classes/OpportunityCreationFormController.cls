@@ -29,7 +29,7 @@ public without sharing class OpportunityCreationFormController {
         List<OpportunityLineItem> opportunityLineItems = new List<OpportunityLineItem>();
         List<Object> productsList = (List<Object>) JSON.deserializeUntyped(productsJSON);
 
-        for(Object product : productsList) {
+        for (Object product : productsList) {
             Map<String, Object> productMap = (Map<String, Object>) product;
             OpportunityLineItem newOpportunityLineItem = new OpportunityLineItem();
             newOpportunityLineItem.OpportunityId = opportunityId;

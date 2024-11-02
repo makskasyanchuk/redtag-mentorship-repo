@@ -1,5 +1,6 @@
 ({
-    saveOpportunityLineItems : function(component, lineItems, recordId) {
+    saveOpportunityLineItems : function(component, recordId) {
+        let lineItems = component.find("opportunityProductsList").get("v.opportunityLineItems");
         let action = component.get("c.createOpportunityLineItems");
 
         if(lineItems.length > 0) {
@@ -70,8 +71,6 @@
         });
 
         Promise.all([getAccountNameById, getContactLastNameById]).then(function(results) {
-            console.log("Account name: " + results[0]);
-            console.log("Contact name: " + results[1]);
             action.setParams({accountName : results[0], contactLastName : results[1]});
             action.setCallback(this, function(response) {
                 let state = response.getState();
@@ -82,6 +81,60 @@
             $A.enqueueAction(action);
         }).catch(function(error) {
             console.error(error);
+        });
+    },
+    validateLookupFields : function(component) {
+        let accountId = component.find("accountField").get("v.value");
+        let contactId = component.find("contactField").get("v.value");
+
+        if(!accountId) {
+            component.find("notifLib").showToast({
+                "title": "Creation failed",
+                "message": "Please, choose an Account for Opportunity",
+                "variant": 'error'
+            });
+            return;
+        } 
+        if (!contactId) {
+            component.find("notifLib").showToast({
+                "title": "Creation failed",
+                "message": "Please, choose a Contact for Opportunity",
+                "variant": 'error'
+            });
+            return;
+        }
+    },
+    publishToChannel : function(component) {
+        let messageService = component.find("messageService");
+
+        if (!messageService) {
+            console.error("Message service not found!");
+        } else {
+            console.log("Message service found.");
+        }
+
+        let messagePayload = {
+            recordId: component.get("v.recordId"),
+            opportunityName: component.find("opportunityName").get("v.value")
+        };
+
+        messageService.publish({
+            channelName: "OpportunityCreatedChannel__c",
+            message: messagePayload
+        });
+    },
+    successfulToast : function(component, payload) {
+        component.find("notifLib").showToast({
+            "title": "Opportunity created",
+            "message": "Opportunity was successfuly created, Id: " + payload.id,
+            "variant": 'success'
+        });
+    },
+    failureToast : function(component, event) {
+        component.find("notifLib").showToast({
+            "title": "Failed to create an Opportunity",
+            "message": event.getParam('message'),
+            "variant": "error"
         });
     }
 })

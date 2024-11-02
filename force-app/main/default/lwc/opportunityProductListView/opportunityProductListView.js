@@ -22,11 +22,12 @@ const columns = [
 ]
 
 export default class OpportunityProductListView extends LightningElement {
-    columns = columns;
-    @track opportunityProducts = [];
-    errors;
-
     @api opportunityIds; // Accepts the list of opportunity ids from parent
+    
+    columns = columns;
+    errors;
+    
+    @track opportunityProducts = [];
 
     @wire(getOpportunityProducts, {opportunityIds: '$opportunityIds'})
     fetchData({data, error}) {
