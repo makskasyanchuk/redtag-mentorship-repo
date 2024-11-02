@@ -1,5 +1,6 @@
 public with sharing class CalculateOpportunitySummaryMetricsBatch implements Database.Batchable<sObject>, Database.Stateful {
     public Boolean skipFinish = false;
+    public String emailBody;
 
     @InvocableMethod
     public static void executeBatch() {
@@ -41,7 +42,6 @@ public with sharing class CalculateOpportunitySummaryMetricsBatch implements Dat
 
     public void finish(Database.BatchableContext BC) { 
         if (!skipFinish) {
-            String body;
             Map<Id, Decimal> statisticsMapForClosedWonOpps = new Map<Id, Decimal>();
             Map<Id, Decimal> statisticsMapForClosedLostOpps = new Map<Id, Decimal>();
     
@@ -55,11 +55,11 @@ public with sharing class CalculateOpportunitySummaryMetricsBatch implements Dat
                     statisticsMapForClosedLostOpps.put(statistic.Id, statistic.Closed_Lost_Opportunities__c);
                 }
     
-                body = 'Closed Won Opportunities: ' + statisticsMapForClosedWonOpps.get(statistic.Id) + '\n' +
+                emailBody = 'Closed Won Opportunities: ' + statisticsMapForClosedWonOpps.get(statistic.Id) + '\n' +
                 'Closed Lost Opportunities: ' + statisticsMapForClosedLostOpps.get(statistic.Id);
             }    
 
-            System.enqueueJob(new OpportunitySummaryEmail(body));
+            System.enqueueJob(new OpportunitySummaryEmail(emailBody));
         }
 
     }

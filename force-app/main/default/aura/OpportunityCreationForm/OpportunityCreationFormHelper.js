@@ -3,7 +3,7 @@
         let lineItems = component.find("opportunityProductsList").get("v.opportunityLineItems");
         let action = component.get("c.createOpportunityLineItems");
 
-        if(lineItems.length > 0) {
+        if (lineItems.length > 0) {
             action.setParams(
                 {
                     opportunityId: recordId, 
@@ -12,7 +12,7 @@
             );
             action.setCallback(this, function(response) {
                 const state = response.getState();
-                if(state === "SUCCESS") {
+                if (state === "SUCCESS") {
                     component.find('notifLib').showToast({
                         "title": "Line Items Created",
                         "message": "Opportunity Line Items were successfully created.",
@@ -48,7 +48,7 @@
             getAccountName.setParams({accountId : accountId});
             getAccountName.setCallback(this, function(response) {
                 let state = response.getState();
-                if(state === "SUCCESS") {
+                if (state === "SUCCESS") {
                     resolve(response.getReturnValue());
                 } else {
                     reject("Failed to fetch account name");
@@ -61,7 +61,7 @@
             getContactLastName.setParams({contactId : contactId});
             getContactLastName.setCallback(this, function(response) {
                 let state = response.getState();
-                if(state === "SUCCESS") {
+                if (state === "SUCCESS") {
                     resolve(response.getReturnValue());
                 } else {
                     reject("Failed to fetch contact last name");
@@ -74,7 +74,7 @@
             action.setParams({accountName : results[0], contactLastName : results[1]});
             action.setCallback(this, function(response) {
                 let state = response.getState();
-                if(state === "SUCCESS") {
+                if (state === "SUCCESS") {
                     console.log("Names are set");
                 }
             });
@@ -87,7 +87,7 @@
         let accountId = component.find("accountField").get("v.value");
         let contactId = component.find("contactField").get("v.value");
 
-        if(!accountId) {
+        if (!accountId) {
             component.find("notifLib").showToast({
                 "title": "Creation failed",
                 "message": "Please, choose an Account for Opportunity",

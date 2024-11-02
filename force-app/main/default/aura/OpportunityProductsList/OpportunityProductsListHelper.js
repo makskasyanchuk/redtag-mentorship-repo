@@ -85,7 +85,7 @@
         let opportunityLineItems = component.get('v.opportunityLineItems');
         let indexToDelete = opportunityLineItems.findIndex(item => item.Id === row.Id);
 
-        if(indexToDelete !== -1) {
+        if (indexToDelete !== -1) {
             opportunityLineItems.splice(indexToDelete, 1);
             component.set("v.opportunityLineItems", opportunityLineItems);
 
@@ -113,15 +113,15 @@
         action.setParams({products : updatedProducts});
         action.setCallback(this, function(response) {
             let state = response.getState();
-            if(state === "SUCCESS") {
+            if (state === "SUCCESS") {
                 let updatedItems = component.get("v.opportunityLineItems");
                 draftValues.forEach(draft => {
                     let index = updatedItems.findIndex(item => item.Id === draft.Id);
-                    if(index !== -1) {
-                        if(draft.Quantity !== undefined) {
+                    if (index !== -1) {
+                        if (draft.Quantity !== undefined) {
                             updatedItems[index].Quantity = draft.Quantity;
                         }
-                        if(draft.UnitPrice !== undefined) {
+                        if (draft.UnitPrice !== undefined) {
                             updatedItems[index].UnitPrice = draft.UnitPrice;
                         }
                     }
@@ -135,7 +135,7 @@
                 });
 
                 component.set("v.draftValues", []);
-            } else if(state === "ERROR") {
+            } else if (state === "ERROR") {
                 let errors = response.getError();
                 component.find("notifLib").showToast({
                     "title": "Failure",

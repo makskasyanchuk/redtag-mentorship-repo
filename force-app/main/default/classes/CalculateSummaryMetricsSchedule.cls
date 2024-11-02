@@ -1,10 +1,11 @@
 public with sharing class CalculateSummaryMetricsSchedule implements Schedulable {
 
+    private final static String CRON_EXPRESSION = '0 0 10 ? * MON,WED,FRI';
+
     @AuraEnabled
     public static void callSchedule(){
         try {
-            String cronExpression = '0 0 10 ? * MON,WED,FRI';
-            System.schedule('Opportunity Summary Metrics Scheduler ' + String.valueOf(System.currentTimeMillis()), cronExpression, new CalculateSummaryMetricsSchedule());
+            System.schedule('Opportunity Summary Metrics Scheduler ' + String.valueOf(System.currentTimeMillis()), CRON_EXPRESSION, new CalculateSummaryMetricsSchedule());
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
