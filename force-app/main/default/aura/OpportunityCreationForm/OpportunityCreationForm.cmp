@@ -3,6 +3,7 @@
     <aura:attribute name="opportunity" type="Opportunity" default="{'sobjectType': 'Opportunity'}"/>
     <aura:attribute name="recordId" type="String" />
     <aura:attribute name="lineItems" type="List" default="[]"/>
+    <aura:attribute name="visible" type="Boolean" default="true"/>
 
     <lightning:notificationsLibrary aura:id="notifLib"/>
     <!-- Navigation service -->
@@ -12,7 +13,7 @@
 
     <div>
         <lightning:card title="Create Opportunity">
-            <lightning:recordEditForm aura:id="createOpportunity" objectApiName="Opportunity" class="slds-m-around_medium" onsuccess="{!c.handleSuccess}" onerror="{!c.handleError}">
+            <lightning:recordEditForm aura:id="createOpportunity" objectApiName="Opportunity" class="slds-m-around_medium" onsuccess="{!c.handleSuccess}">
                 <lightning:messages/>
                 <div class="slds-m-around_medium">
                     <lightning:inputField aura:id="opportunityName" class="slds-p-around_medium" fieldName="Name"/>
@@ -20,6 +21,8 @@
                     <force:inputField aura:id="accountField" value="{!v.opportunity.AccountId}" required="true"/>
                     <p class="slds-text-title">Contact</p>
                     <force:inputField aura:id="contactField" value="{!v.opportunity.Contact__c}" required="true"/>
+                    <lightning:inputField aura:id="relatedAccountName" fieldName="Related_Account_Name__c" value="{!v.opportunity.Account.Name}" disabled="true"/>
+                    <lightning:inputField aura:id="relatedContactLastName" fieldName="Related_Contact_Last_Name__c" value="{!v.opportunity.Contact__r.Name}" disabled="true"/>
                 </div>
                 <lightning:button class="slds-m-top_small slds-m-around_medium" variant="brand" type="submit" name="save" label="Save"/>
             </lightning:recordEditForm>
