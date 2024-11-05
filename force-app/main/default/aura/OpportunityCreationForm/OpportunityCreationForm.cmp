@@ -3,7 +3,7 @@
     <aura:attribute name="opportunity" type="Opportunity" default="{'sobjectType': 'Opportunity'}"/>
     <aura:attribute name="recordId" type="String" />
     <aura:attribute name="lineItems" type="List" default="[]"/>
-    <aura:attribute name="visible" type="Boolean" default="true"/>
+    <aura:attribute name="visible" type="Boolean" default="false"/>
 
     <lightning:notificationsLibrary aura:id="notifLib"/>
     <!-- Navigation service -->
@@ -24,9 +24,20 @@
                     <lightning:inputField aura:id="relatedAccountName" fieldName="Related_Account_Name__c" value="{!v.opportunity.Account.Name}" disabled="true"/>
                     <lightning:inputField aura:id="relatedContactLastName" fieldName="Related_Contact_Last_Name__c" value="{!v.opportunity.Contact__r.Name}" disabled="true"/>
                 </div>
-                <lightning:button class="slds-m-top_small slds-m-around_medium" variant="brand" type="submit" name="save" label="Save"/>
+                <div class="slds-grid slds-grid_align-spread slds-m-around_medium">
+                    <lightning:button class="slds-m-right_small" variant="brand" type="submit" name="save" label="Save"/>
+                    <lightning:input aura:id="selectToAddProducts" 
+                                     class="slds-p-top_small" 
+                                     type="checkbox" 
+                                     label="Do you want to add products as well?" 
+                                     name="chooseToAddProducts" 
+                                     onchange="{!c.handleCheckboxChange}"/>
+                </div>
             </lightning:recordEditForm>
-            <c:OpportunityProductsList aura:id="opportunityProductsList"/>
+            <hr/>
+            <aura:if isTrue="{!v.visible}">
+                <c:OpportunityProductsList aura:id="opportunityProductsList"/>
+            </aura:if>
         </lightning:card>
     </div>
 </aura:component>

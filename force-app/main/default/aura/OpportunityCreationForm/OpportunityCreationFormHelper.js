@@ -1,7 +1,7 @@
 ({
     saveOpportunityLineItems : function(component, recordId) {
         let lineItems = component.find("opportunityProductsList").get("v.opportunityLineItems");
-        let action = component.get("c.createOpportunityLineItems");
+        let action = component.get("c.insertOpportunityLineItems");
 
         if (lineItems.length > 0) {
             action.setParams(
@@ -54,6 +54,44 @@
                 "variant": 'error'
             });
             return;
+        }
+    },
+    setAccountIdForSelectedContact : function(component) {
+        let accountId = component.find("accountField").get("v.value");
+        let contactId = component.get("v.opportunity.Contact__c");
+
+        if (accountId && contactId) {
+            console.log("Went into condition to check if ids are fetched");
+            let action = component.get("c.updateContactsToSetAccountId");
+            action.setParams({ accountId : accountId, contactId : contactId });
+            action.setCallback(this, function(response) {
+                const state = response.getState();
+                if (state === "SUCCESS") {
+                    console.log("Successfuly set the Account Id for Contact");
+                } else {
+                    console.error("Error setting the Account Id for Contact: " + response.getError());
+                }
+            });
+            $A.enqueueAction(action);
+        }
+    },
+    setContactIdForOpportunity : function(component, payloadId) {
+        let accountId = component.find("accountField").get("v.value");
+        let contactId = component.get("v.opportunity.Contact__c");
+        let opportunityId = payloadId;
+
+        if (accountId && contactId) {
+            let action = component.get("c.updateOpportunitiesToSetContactId");
+            action.setParams({ opportunityId : opportunityId, contactId : contactId, accountId : accountId });
+            action.setCallback(this, function(response) {
+                const state = response.getState();
+                if (state === "SUCCESS") {
+                    console.log("Successfuly set the Contact Id for Opportunity");
+                } else {
+                    console.error("Error setting the Contact Id for Opportunity: " + response.getError());
+                }
+            });
+            $A.enqueueAction(action);
         }
     },
     publishToChannel : function(component) {
