@@ -379,15 +379,6 @@ private class OpportunityHandlerServiceTest {
             WHERE AccountId =: account.Id
         ];
 
-        Opportunity opportunity = [
-            SELECT Id, 
-                   Name, 
-                   Related_Account_Name__c, 
-                   Related_Contact_Last_Name__c 
-            FROM Opportunity 
-            WHERE Related_Account_Name__c = :account.Name AND AccountId =: account.Id
-        ];
-
         List<Opportunity> opportunityList = [
             SELECT Id, 
                    Name, 

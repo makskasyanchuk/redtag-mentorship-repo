@@ -10,7 +10,7 @@ private class GenerateAndSendPDFEmailServiceTest {
     }
 
     @isTest
-    static void testSendEmailWithPdfAttachment() {
+    static void testSendEmailWithPdfAttachmentPositive() {
         Quote quote = [SELECT Id, Name, AccountId, ContactId FROM Quote WHERE Name = 'TestQuote' LIMIT 1];
         Test.startTest();
         GenerateAndSendPDFEmailService.Request request = new GenerateAndSendPDFEmailService.Request();
@@ -29,5 +29,27 @@ private class GenerateAndSendPDFEmailServiceTest {
         Assert.isNotNull(results, 'The results list should not be null.');
         Assert.isTrue(results.size() > 0, 'At least one result should be returned.');
         Assert.isTrue(String.isEmpty(results[0].errorMessage), 'There should be no error message.');
+    }
+
+    @isTest
+    static void testSendEmailWithPdfAttachmentNegative() {
+        Quote quote = [SELECT Id, Name, AccountId, ContactId FROM Quote WHERE Name = 'TestQuote' LIMIT 1];
+
+        GenerateAndSendPDFEmailService.Request request = new GenerateAndSendPDFEmailService.Request();
+        request.recordId = quote.Id;  // Set an invalid ID to cause failure
+        request.quoteName = 'TestQuote';
+        request.recepientEmail = 'invalid_email';  // Invalid email format
+        request.visualforcePageName = 'broken_page';
+
+        Test.startTest();
+        List<GenerateAndSendPDFEmailService.Result> results = GenerateAndSendPDFEmailService.sendEmailWithPdfAttachment(
+            new List<GenerateAndSendPDFEmailService.Request> { request }
+        );
+        Test.stopTest();
+
+        // Check that the failure branch was hit
+        Assert.isFalse(results[0].isSuccess, 'The email sending process should not be successful for invalid input.');
+        Assert.isNotNull(results[0].errorMessage, 'An error message should be returned when sending fails.');
+        Assert.isTrue(results.size() > 0, 'At least one result should be returned.');
     }
 }

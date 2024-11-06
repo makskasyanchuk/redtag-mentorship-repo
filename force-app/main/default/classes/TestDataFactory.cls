@@ -33,6 +33,53 @@ public class TestDataFactory {
         return opp;
     }
 
+    public static Product2 createProduct() {
+        Product2 prod = new Product2(
+            Name = 'Test product', 
+            Family = 'Test data'
+        );
+        insert prod;
+
+        return prod;
+    }
+
+    public static PricebookEntry createStandardPricebookEntry(Id pricebookId, Id productId) {
+        PricebookEntry standardPrice = new PricebookEntry(
+            Pricebook2Id = pricebookId, Product2Id = productId,
+            UnitPrice = 10000, IsActive = true);
+        insert standardPrice;
+        
+        return standardPrice;
+    }
+
+    public static Pricebook2 createCustomPricebook() {
+        Pricebook2 customPB = new Pricebook2(Name='Custom Pricebook', isActive=true);
+        insert customPB;
+
+        return customPB;
+    }
+
+    public static PricebookEntry createCustomPricebookEntry(Id customPbId, Id productId) {
+        PricebookEntry customPrice = new PricebookEntry(
+            Pricebook2Id = customPbId, Product2Id = productId,
+            UnitPrice = 12000, IsActive = true);
+        insert customPrice;
+
+        return customPrice;
+    }
+
+    public static OpportunityLineItem createOpportunityLineItem(Id opportunityId, Id pricebookEntryId) {
+        OpportunityLineItem lineItem = new OpportunityLineItem(
+            OpportunityId = opportunityId,
+            PricebookEntryId = pricebookEntryId,
+            Quantity = 1,
+            TotalPrice = 100
+        );
+        insert lineItem;
+
+        return lineItem;
+    }
+
     public static List<Opportunity> createWonOpportunities(Id accountId, Id contactId) {
         Integer currentMonth = Date.today().month();
         Integer currentQuarter = ((currentMonth - 1) / 3) + 1;

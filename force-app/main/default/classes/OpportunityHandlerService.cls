@@ -54,7 +54,6 @@ public with sharing class OpportunityHandlerService {
         OpportunityEmailSenderBatch emailBatch = new OpportunityEmailSenderBatch(opportunityList, template.Id);
         emailBatch.start(null);
         emailBatch.execute(null, opportunityList);
-        emailBatch.finish(null);
     }
 
     @TestVisible

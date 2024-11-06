@@ -9,6 +9,7 @@
     <aura:attribute name="opportunityLineItem" type="OpportunityLineItem"/>
     <aura:attribute name="draftValues" type="Object" default="[]"/>
     <aura:attribute name="errors" type="Object" default="[]"/>
+    
     <!-- Init -->
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
 

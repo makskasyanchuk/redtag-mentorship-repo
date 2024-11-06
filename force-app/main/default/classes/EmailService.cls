@@ -66,7 +66,13 @@ public with sharing class EmailService {
         PageReference quotePage = new PageReference('/apex/' + visualforcePageName);
         quotePage.getParameters().put('Id', recordId);
         
-        Blob quotePdf = quotePage.getContentAsPDF();
+        Blob quotePdf;
+        
+        if (Test.isRunningTest()) {
+            quotePdf = Blob.valueOf('Unit.Test');
+        } else {
+            quotePdf = quotePage.getContentAsPDF();
+        }
         
         return quotePdf;
     }

@@ -8,12 +8,6 @@ public with sharing class OpportunitySummaryEmailQueueable implements Queueable 
     }
 
     public void execute(QueueableContext QC) {
-        try {
-            EmailService.sendEmailWithSummary(body);
-        } catch (Exception e) {
-            if (e instanceof EmailException) {
-                throw new CustomEmailSendingException('Error sending email summary: ' + e.getMessage() + ' Caused by: ' + e.getCause());
-            }
-        }
+        EmailService.sendEmailWithSummary(body);
     }
 }

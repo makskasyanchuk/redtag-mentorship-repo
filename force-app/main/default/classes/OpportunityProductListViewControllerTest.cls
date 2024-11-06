@@ -1,5 +1,5 @@
 @isTest
-private class OpportunityListViewControllerTest {
+private class OpportunityProductListViewControllerTest {
 
     @TestSetup
     static void makeData(){
@@ -15,7 +15,9 @@ private class OpportunityListViewControllerTest {
     }
 
     @isTest
-    static void testGetOpportunitiesWithProducts() {
+    static void testGetOpportunityProducts() {
+        List<Id> opportunityIds = new List<Id>();
+
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
 
         Contact contact = [SELECT Id, Name, FirstName, LastName FROM Contact WHERE AccountId = :account.Id];
@@ -33,38 +35,12 @@ private class OpportunityListViewControllerTest {
             WHERE AccountId = :account.Id AND Contact__c = :contact.Id
         ];
 
+        opportunityIds.add(opportunity.Id);
+
         Test.startTest();
-        List<OpportunityListViewController.OpportunityWrapper> wrapperList = OpportunityListViewController.getOpportunitiesWithProducts();
+        List<OpportunityProductListViewController.OpportunityProductWrapper> wrapperList = OpportunityProductListViewController.getOpportunityProducts(opportunityIds);
         Test.stopTest();
 
         Assert.isTrue(wrapperList.size() > 0);
-    }
-
-    @isTest
-    static void testMassDelete() {
-        Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
-
-        Contact contact = [SELECT Id, Name, FirstName, LastName FROM Contact WHERE AccountId = :account.Id];
-
-        Opportunity opportunity = [
-            SELECT Id, 
-                   Name, 
-                   AccountId, 
-                   Contact__c,
-                   StageName,
-                   CloseDate,
-                   Contact__r.Name,
-                   Account.Name 
-            FROM Opportunity
-            WHERE AccountId = :account.Id AND Contact__c = :contact.Id
-        ];
-
-        List<Id> opportunityIds = new List<Id> {opportunity.Id};
-
-        Test.startTest();
-        OpportunityListViewController.massDeleteOpportunities(opportunityIds);
-        Test.stopTest();
-
-        Assert.isTrue(!opportunityIds.isEmpty());
     }
 }

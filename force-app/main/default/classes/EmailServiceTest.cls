@@ -14,10 +14,12 @@ private class EmailServiceTest {
 
         Contact contact = [
             SELECT Id,
+                   Name,
+                   FirstName,
                    LastName, 
                    AccountId 
             FROM Contact 
-            WHERE AccountId =: account.Id AND LastName = 'Maksym Kasyanchuk'
+            WHERE AccountId =: account.Id AND Name = 'Maksym Kasyanchuk'
         ];
 
         List<Opportunity> opportunityList = [
@@ -28,7 +30,7 @@ private class EmailServiceTest {
                    AccountId, 
                    Contact__c
             FROM Opportunity 
-            WHERE Related_Account_Name__c = :account.Name AND Related_Contact_Last_Name__c =: contact.LastName
+            WHERE Related_Account_Name__c = :account.Name AND Related_Contact_Last_Name__c =: contact.Name
         ];
 
         EmailTemplate et = new EmailTemplate();
