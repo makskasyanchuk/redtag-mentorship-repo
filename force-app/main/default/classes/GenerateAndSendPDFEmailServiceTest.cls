@@ -10,14 +10,17 @@ private class GenerateAndSendPDFEmailServiceTest {
     }
 
     @isTest
-    static void testGenerator() {
+    static void testSendEmailWithPdfAttachment() {
         Quote quote = [SELECT Id, Name, AccountId, ContactId FROM Quote WHERE Name = 'TestQuote' LIMIT 1];
         Test.startTest();
         GenerateAndSendPDFEmailService.Request request = new GenerateAndSendPDFEmailService.Request();
         request.recordId = quote.Id;
+        request.quoteName = quote.Name;
         request.recepientEmail = 'test@google.com';
         request.visualforcePageName = 'QuotePDF';
-        List<GenerateAndSendPDFEmailService.Result> results = GenerateAndSendPDFEmailService.sendEmailWithPdfAttachment(new List<GenerateAndSendPDFEmailService.Request> {request});
+        List<GenerateAndSendPDFEmailService.Result> results = GenerateAndSendPDFEmailService.sendEmailWithPdfAttachment(
+            new List<GenerateAndSendPDFEmailService.Request> {request}
+        );
         Test.stopTest();
 
         Assert.isTrue(results[0].isSuccess);

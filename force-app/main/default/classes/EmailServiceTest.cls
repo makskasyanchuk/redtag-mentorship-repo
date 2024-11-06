@@ -64,4 +64,29 @@ private class EmailServiceTest {
         Assert.areEqual(1, invocations, 'Email should be sent');
         Assert.isFalse(pdfBlob == null);
     }
+
+    @isTest
+    static void testSendEmailWithSummary() {
+        String body = 'test body';
+
+        Test.startTest();
+        EmailService.sendEmailWithSummary(body);
+        Integer invocations = Limits.getEmailInvocations(); 
+        Test.stopTest();
+
+        Assert.areEqual(1, invocations);
+    }
+
+    @isTest
+    static void testGetPdfContent() {
+        Quote quote = [SELECT Id, Name, AccountId, ContactId FROM Quote WHERE Name = 'TestQuote' LIMIT 1];
+        String vfPageName = 'QuotePDF';
+
+        Test.startTest();
+        Blob quotePdf = EmailService.getPDFContent(quote.Id, vfPageName);
+        Test.stopTest();
+
+        Assert.isTrue(quotePdf != null);
+        Assert.isTrue(quote.Id != null);
+    }
 }

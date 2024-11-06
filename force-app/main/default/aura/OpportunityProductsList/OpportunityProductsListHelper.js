@@ -15,7 +15,6 @@
 
         $A.enqueueAction(action);
     },
-
     addProductToList : function(component) {
         let selectedProductId = component.get("v.selectedProduct");
         let products = component.get("v.options");
@@ -45,7 +44,6 @@
             console.log("Selected product not found");
         }
     },
-
     setColumns : function(component) {
         let columns = [
             {label: 'Product Name', fieldName: 'Name', type: 'text'},
@@ -65,22 +63,18 @@
         ];
         component.set("v.columns", columns);
     },
-
     productChange : function(component, event) {
         let selectedProductId = event.getSource().get("v.value");
         component.set("v.selectedProduct", selectedProductId);
     },
-
     quantityChange : function(component, event) {
         let quantity = event.getSource().get("v.value");
         component.set("v.quantity", quantity);
     },
-
     unitPriceChange : function(component, event) {
         let unitPrice = event.getSource().get("v.value");
         component.set("v.unitPrice", unitPrice);
     },
-
     deleteProductFromTheList : function(component, row) {
         let opportunityLineItems = component.get('v.opportunityLineItems');
         let indexToDelete = opportunityLineItems.findIndex(item => item.Id === row.Id);
@@ -96,7 +90,6 @@
             });
         }
     },
-
     productUpdate : function(component, event, draftValues) {
         let updatedProducts = [];
         draftValues.forEach(draft => {
