@@ -1,5 +1,5 @@
 @isTest
-private class OpportunityServiceTest {
+private class OpportunityHandlerServiceTest {
 
     @TestSetup
     static void makeData(){
@@ -52,10 +52,12 @@ private class OpportunityServiceTest {
 
         Contact contact = [
             SELECT Id,
+                   Name,
+                   FirstName,
                    LastName, 
                    AccountId 
             FROM Contact 
-            WHERE AccountId =: account.Id AND LastName = 'Maksym Kasyanchuk'
+            WHERE AccountId =: account.Id AND Name = 'Maksym Kasyanchuk'
         ];
 
         Opportunity opportunity = [
@@ -65,7 +67,7 @@ private class OpportunityServiceTest {
                    Related_Contact_Last_Name__c, 
                    Contact__c 
             FROM Opportunity 
-            WHERE Related_Contact_Last_Name__c =: contact.LastName AND Contact__c =: contact.Id
+            WHERE Related_Contact_Last_Name__c =: contact.Name AND Contact__c =: contact.Id
         ];
 
         Opportunity opportunityWithNewContact = new Opportunity(
@@ -84,7 +86,7 @@ private class OpportunityServiceTest {
                    Related_Account_Name__c, 
                    Related_Contact_Last_Name__c 
             FROM Opportunity
-            WHERE Related_Account_Name__c =: account.Name AND Related_Contact_Last_Name__c =: contact.LastName
+            WHERE Related_Account_Name__c =: account.Name AND Related_Contact_Last_Name__c =: contact.Name
         ];
 
         List<Opportunity> newOpportunityList = new List<Opportunity> {
@@ -103,14 +105,22 @@ private class OpportunityServiceTest {
         Assert.isTrue(opportunity.Id != null);
         Assert.isTrue(opportunity.Contact__c != null);
         Assert.isTrue(account.Name == opportunity.Related_Account_Name__c);
-        Assert.isTrue(contact.LastName == opportunity.Related_Contact_Last_Name__c);
+        Assert.isTrue(contact.Name == opportunity.Related_Contact_Last_Name__c);
     }
 
     @isTest
     static void testUpdateRelatedAccountPositive() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
 
-        Contact contact = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id];
+        Contact contact = [
+            SELECT Id,
+                   Name, 
+                   FirstName, 
+                   LastName, 
+                   AccountId 
+            FROM Contact 
+            WHERE AccountId =: account.Id
+        ];
 
         Opportunity opportunity = [
             SELECT Id, 
@@ -152,7 +162,15 @@ private class OpportunityServiceTest {
     static void testUpdateRelatedAccountNegative() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
 
-        Contact contact = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id];
+        Contact contact = [
+            SELECT Id,
+                   Name, 
+                   FirstName, 
+                   LastName, 
+                   AccountId 
+            FROM Contact 
+            WHERE AccountId =: account.Id
+        ];
 
         Opportunity opportunity = [
             SELECT Id, 
@@ -192,7 +210,15 @@ private class OpportunityServiceTest {
     static void testUpdateRelatedContactPositive() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
 
-        Contact contact = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id];
+        Contact contact = [
+            SELECT Id,
+                   Name, 
+                   FirstName, 
+                   LastName, 
+                   AccountId 
+            FROM Contact 
+            WHERE AccountId =: account.Id
+        ];
 
         Opportunity opportunity = [
             SELECT Id, 
@@ -219,7 +245,7 @@ private class OpportunityServiceTest {
                    Contact__c, 
                    Related_Account_Name__c 
             FROM Opportunity
-            WHERE Related_Contact_Last_Name__c =: contact.LastName
+            WHERE Related_Contact_Last_Name__c =: contact.Name
         ];
 
         Test.startTest();
@@ -230,7 +256,7 @@ private class OpportunityServiceTest {
         Assert.isTrue(account.Id != null);
         Assert.isTrue(contact.Id != null);
         Assert.isTrue(opportunity.Id != null);
-        Assert.isTrue(contact.LastName != opportunity.Related_Contact_Last_Name__c);
+        Assert.isTrue(contact.Name != opportunity.Related_Contact_Last_Name__c);
         Assert.isTrue(contact.AccountId != null);
     }
 
@@ -238,7 +264,15 @@ private class OpportunityServiceTest {
     static void testUpdateRelatedContactNegative() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
 
-        Contact contact = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id];
+        Contact contact = [
+            SELECT Id,
+                   Name, 
+                   FirstName, 
+                   LastName, 
+                   AccountId 
+            FROM Contact 
+            WHERE AccountId =: account.Id
+        ];
 
         Opportunity opportunity = [
             SELECT Id, 
@@ -263,7 +297,7 @@ private class OpportunityServiceTest {
                    Related_Contact_Last_Name__c, 
                    Related_Account_Name__c 
             FROM Opportunity
-            WHERE Related_Contact_Last_Name__c =: contact.LastName
+            WHERE Related_Contact_Last_Name__c =: contact.Name
         ];
 
         Test.startTest();
@@ -274,7 +308,7 @@ private class OpportunityServiceTest {
         Assert.isTrue(account.Id != null);
         Assert.isTrue(contact.Id != null);
         Assert.isTrue(opportunity.Id != null);
-        Assert.isTrue(contact.LastName != opportunity.Related_Contact_Last_Name__c);
+        Assert.isTrue(contact.Name != opportunity.Related_Contact_Last_Name__c);
         Assert.isTrue(contact.AccountId != null);
     }
 
@@ -282,7 +316,15 @@ private class OpportunityServiceTest {
     static void testUpdateRelatedContactAndAccountInfo() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
 
-        Contact contact = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id];
+        Contact contact = [
+            SELECT Id,
+                   Name, 
+                   FirstName, 
+                   LastName, 
+                   AccountId 
+            FROM Contact 
+            WHERE AccountId =: account.Id
+        ];
 
         Opportunity opportunity = [
             SELECT Id, 
@@ -306,7 +348,7 @@ private class OpportunityServiceTest {
                    AccountId, 
                    Contact__c 
             FROM Opportunity
-            WHERE Related_Account_Name__c = :account.Name AND Related_Contact_Last_Name__c =: contact.LastName
+            WHERE Related_Account_Name__c = :account.Name AND Related_Contact_Last_Name__c =: contact.Name
         ];
 
         Test.startTest();
@@ -317,7 +359,7 @@ private class OpportunityServiceTest {
         Assert.isTrue(account.Id != null);
         Assert.isTrue(contact.Id != null);
         Assert.isTrue(opportunity.Id != null);
-        Assert.isTrue(contact.LastName == opportunity.Related_Contact_Last_Name__c);
+        Assert.isTrue(contact.Name == opportunity.Related_Contact_Last_Name__c);
         Assert.isTrue(account.Name == opportunity.Related_Account_Name__c);
         Assert.isTrue(contact.AccountId != null);
         Assert.isTrue(opportunity.AccountId != null);
@@ -327,7 +369,15 @@ private class OpportunityServiceTest {
     static void testDeleteOpportunity() {
         Account account = [SELECT Id, Name FROM Account WHERE Name = 'Redtag'];
 
-        Contact contact = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId =: account.Id];
+        Contact contact = [
+            SELECT Id,
+                   Name, 
+                   FirstName, 
+                   LastName, 
+                   AccountId 
+            FROM Contact 
+            WHERE AccountId =: account.Id
+        ];
 
         Opportunity opportunity = [
             SELECT Id, 
@@ -344,7 +394,7 @@ private class OpportunityServiceTest {
                    Related_Account_Name__c, 
                    Related_Contact_Last_Name__c 
             FROM Opportunity
-            WHERE Related_Account_Name__c = :account.Name AND Related_Contact_Last_Name__c =: contact.LastName
+            WHERE Related_Account_Name__c = :account.Name AND Related_Contact_Last_Name__c =: contact.Name
         ];
 
         Test.startTest();

@@ -11,7 +11,8 @@ public class TestDataFactory {
 
     public static Contact createContact(Id acctId) {
         Contact cont = new Contact(
-            LastName = 'Maksym Kasyanchuk',
+            FirstName = 'Maksym',
+            LastName = 'Kasyanchuk',
             AccountId = acctId
         );
         insert cont;
@@ -30,44 +31,6 @@ public class TestDataFactory {
         insert opp;
 
         return opp;
-    }
-
-    public static Product2 createProduct() {
-        Product2 product = new Product2(Name = 'Test Product', IsActive = true);
-        insert product;
-
-        return product;
-    }
-
-    public static Pricebook2 createPricebook() {
-        Pricebook2 customPricebook = new Pricebook2(Name = 'Custom Pricebook', IsActive = true);
-        insert customPricebook;
-
-        return customPricebook;
-    }
-
-    public static PricebookEntry createPricebookEntry(Id productId, Id pricebookId) {
-        PricebookEntry pricebookEntry = new PricebookEntry(
-            Pricebook2Id = pricebookId,
-            Product2Id = productId,
-            UnitPrice = 100,
-            IsActive = true
-        );
-        insert pricebookEntry;
-
-        return pricebookEntry;
-    }
-
-    public static OpportunityLineItem createOpportunityLineItem(Id opportunityId, Id peId) {
-        OpportunityLineItem lineItem = new OpportunityLineItem(
-            OpportunityId = opportunityId,
-            PricebookEntryId = peId,
-            Quantity = 1,
-            TotalPrice = 100
-        );
-        insert lineItem;
-
-        return lineItem;
     }
 
     public static List<Opportunity> createWonOpportunities(Id accountId, Id contactId) {
